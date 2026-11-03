@@ -14,6 +14,7 @@ const config: StorybookConfig = {
       options: { mdxPluginOptions: { mdxCompileOptions: { remarkPlugins: [remarkGfm] } } },
     },
     '@storybook/addon-a11y',
+    '@storybook/addon-vitest',
   ],
   framework: '@storybook/react-vite',
 };

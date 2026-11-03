@@ -4,3 +4,5 @@ coverage
 .pack
 pnpm-lock.yaml
 .changeset/*.md
+
+**/snapshots

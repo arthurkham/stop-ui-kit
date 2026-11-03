@@ -41,10 +41,13 @@
 
 ### Tooling and release
 
-- [ ] CI: typecheck, lint, tests and package validation on React 18 and 19
-- [ ] Storybook interaction and accessibility tests in a real browser
+- [x] CI: typecheck, lint, tests and package validation on React 18 and 19
+- [x] Storybook stories as accessibility tests in Chromium, Firefox and WebKit, light and dark
+- [x] CSS invariants, CSS snapshot, browser support lint, bundle size budgets
+- [x] Visual tests with Chromatic
 - [ ] Storybook published to GitHub Pages
-- [ ] Versioning with Changesets and npm trusted publishing
+- [x] Release workflow with Changesets and npm trusted publishing
+- [ ] First release (0.1.0)
 
 ## Accessibility testing
 

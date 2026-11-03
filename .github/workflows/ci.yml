@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm tokens
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm build
+      - name: Package validation (publint, attw)
+        run: pnpm lint:package
+      - name: CSS invariants, snapshot and browser support
+        run: pnpm check:css
+      - name: Bundle size budgets
+        run: pnpm size
+
+  unit:
+    name: Unit tests (React ${{ matrix.react }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        react: [18, 19]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Use React 18
+        if: matrix.react == 18
+        run: pnpm add -Dw react@^18 react-dom@^18 @types/react@^18 @types/react-dom@^18
+      - run: pnpm --filter @stop-ui/react typecheck
+      - run: pnpm test
+
+  browser:
+    name: Browser tests (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - name: Stories render and pass accessibility checks (light and dark themes)
+        run: pnpm test:browser
+        env:
+          BROWSERS: ${{ matrix.browser }}
+
+  changeset:
+    name: Changeset
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Changes to published packages include a changeset
+        run: pnpm changeset status --since=origin/${{ github.base_ref }}
+
+  visual:
+    name: Visual tests (Chromatic)
+    runs-on: ubuntu-latest
+    # Secrets are not available to pull requests from forks.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    env:
+      CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+    steps:
+      - name: Skip without a Chromatic project
+        if: env.CHROMATIC_PROJECT_TOKEN == ''
+        run: echo "::notice::CHROMATIC_PROJECT_TOKEN is not configured; visual tests were skipped."
+      - uses: actions/checkout@v7
+        if: env.CHROMATIC_PROJECT_TOKEN != ''
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+        if: env.CHROMATIC_PROJECT_TOKEN != ''
+      - uses: actions/setup-node@v7
+        if: env.CHROMATIC_PROJECT_TOKEN != ''
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+        if: env.CHROMATIC_PROJECT_TOKEN != ''
+      - run: pnpm tokens
+        if: env.CHROMATIC_PROJECT_TOKEN != ''
+      - uses: chromaui/action@v18
+        if: env.CHROMATIC_PROJECT_TOKEN != ''
+        with:
+          projectToken: ${{ env.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: apps/storybook
+          buildScriptName: build
+          # Only snapshot stories affected by the change (TurboSnap).
+          onlyChanged: true
+          # Visual changes are reviewed and accepted in Chromatic, which reports a separate status.
+          exitZeroOnChanges: true

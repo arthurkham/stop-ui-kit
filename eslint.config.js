@@ -43,12 +43,16 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.config.ts', 'tooling/**/*.{ts,js}', 'eslint.config.js'],
+    files: ['**/*.config.{ts,js}', 'tooling/**/*.{ts,js}', '**/*.cjs'],
     languageOptions: { globals: globals.node },
   },
   {
-    files: ['**/*.js'],
+    files: ['**/*.{js,cjs}'],
     extends: [tseslint.configs.disableTypeChecked],
+  },
+  {
+    files: ['**/*.cjs'],
+    languageOptions: { sourceType: 'commonjs' },
   },
   prettier,
 ]);
