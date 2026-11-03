@@ -1,0 +1,8 @@
+<!--
+  The Storybook iframe plays the host application. As the README recommends for hosts with legacy
+  CSS, it declares the cascade layer order before any other stylesheet, so the order never depends
+  on when a story injects its styles.
+-->
+<style>
+  @layer legacy, theme, base, components, utilities;
+</style>

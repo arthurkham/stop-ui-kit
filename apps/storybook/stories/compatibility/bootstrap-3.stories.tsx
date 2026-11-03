@@ -8,8 +8,9 @@ type BootstrapMode = 'unlayered' | 'layered';
 const hostCss: Record<BootstrapMode, string> = {
   // How most legacy apps load Bootstrap: unlayered CSS beats any layered CSS.
   unlayered: `@import url("${bootstrapCssUrl}");`,
-  // Recommended: declare the layer order first and put Bootstrap into the lowest layer.
-  layered: `@layer legacy, theme, base, components, utilities;\n@import url("${bootstrapCssUrl}") layer(legacy);`,
+  // Recommended: Bootstrap in the lowest layer. The layer order itself is declared before any
+  // other CSS (see .storybook/preview-head.html), as an application would in its <head>.
+  layered: `@import url("${bootstrapCssUrl}") layer(legacy);`,
 };
 
 // Bootstrap 3 sets `html { font-size: 10px }`; restore the kit's intended scale.
@@ -19,8 +20,7 @@ function BootstrapHost({ mode, children }: { mode: BootstrapMode; children: Reac
   useLayoutEffect(() => {
     const style = document.createElement('style');
     style.textContent = `${hostCss[mode]}\n${scaleFix}`;
-    // Layer order is defined by first appearance, so the host CSS must come before the kit CSS.
-    document.head.prepend(style);
+    document.head.append(style);
     return () => {
       style.remove();
     };
