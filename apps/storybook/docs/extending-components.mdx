@@ -1,0 +1,62 @@
+import { Meta, Source } from '@storybook/addon-docs/blocks';
+
+<Meta title="Customization/Extending components" />
+
+# Extending components with `createX`
+
+Every project has its own colors, shapes and defaults. Instead of wrapping components by hand or
+overriding their styles, create **your project's version of a component once** and use it everywhere.
+
+<Source
+  language="tsx"
+  code={`// app/ui/button.tsx
+import { createButton } from '@stop-ui/react';
+
+export const Button = createButton({
+  tones: {
+    success: { color: 'var(--app-success)', hover: 'var(--app-success-hover)', fg: 'var(--app-success-fg)' },
+  },
+  variants: {
+    pill: { extends: 'solid', className: 'rounded-full px-6' },
+  },
+  defaults: { size: 'sm' },
+});`}
+/>
+
+<Source
+  language="tsx"
+  code={`import { Button } from '@/ui/button';
+
+<Button tone="success" variant="pill">Confirm</Button>  // fully typed
+<Button tone="succes">Confirm</Button>                  // TypeScript error: unknown tone`}
+/>
+
+## Why a factory
+
+- **Typed.** New tones and shapes become part of the component's props, with autocompletion and
+  errors for typos.
+- **No runtime provider.** Nothing to wrap your app in, no context reads on every render, and created
+  components work as client components inside React Server Components trees.
+- **Composable with everything else.** A created component keeps the full API: `asChild`, `loading`,
+  styling hooks, `className` and accessibility behavior.
+- **One place for design decisions.** When the design changes, you update one file.
+
+## `createButton` options
+
+| Option     | Type                                               | Description                                                               |
+| ---------- | -------------------------------------------------- | ------------------------------------------------------------------------- |
+| `tones`    | `Record<string, { color, hover, fg, text? }>`      | Additional colors. They work with every shape.                            |
+| `variants` | `Record<string, string \| { extends, className }>` | Additional shapes: replace the shape classes, or extend a built-in shape. |
+| `defaults` | `{ variant?, tone?, size? }`                       | Defaults when a prop is not set. Props still override them.               |
+
+## Accessibility stays intact
+
+- Created components render the same accessible markup and keyboard behavior as the originals.
+- In development, `createButton` warns when a tone's text falls below WCAG AA contrast (for colors
+  it can evaluate, such as hex values).
+- Prefer theme-aware CSS variables for colors, and check new tones in Storybook in every theme.
+
+## Roadmap
+
+Every colored component will get its own factory built on the same tone model (`createBadge`,
+`createAlert`, …), so a tone defined for your project works the same way everywhere.

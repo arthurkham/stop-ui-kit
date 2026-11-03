@@ -58,10 +58,28 @@ import '@stop-ui/react/styles.css';
 ```tsx
 import { Button } from '@stop-ui/react';
 
-export function SaveButton() {
-  return <Button onClick={save}>Save</Button>;
-}
+<Button onClick={save}>Save</Button>
+<Button variant="outline" tone="neutral">Cancel</Button>
+<Button variant="soft" tone="danger">Delete</Button>
 ```
+
+Shape (`variant`) and color (`tone`) are independent. Add your project's own tones, shapes and
+defaults once with a factory, fully typed:
+
+```tsx
+// app/ui/button.tsx
+import { createButton } from '@stop-ui/react';
+
+export const Button = createButton({
+  tones: {
+    success: { color: 'var(--app-success)', hover: 'var(--app-success-hover)', fg: '#fff' },
+  },
+  variants: { pill: { extends: 'solid', className: 'rounded-full px-6' } },
+});
+```
+
+See **Customization** in Storybook for changing colors without overriding styles, adding tones and
+shapes, and styling hooks.
 
 ## Theming
 

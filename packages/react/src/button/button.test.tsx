@@ -22,11 +22,34 @@ describe('Button', () => {
     expect(ref.current).toBeInstanceOf(HTMLButtonElement);
   });
 
-  it('merges custom class names, letting overrides win', () => {
+  it('renders styling hooks for plain CSS', () => {
+    render(
+      <Button variant="soft" tone="danger" size="lg" loading>
+        Delete
+      </Button>,
+    );
+    const button = screen.getByRole('button');
+    expect(button).toHaveAttribute('data-sui-button', '');
+    expect(button).toHaveAttribute('data-variant', 'soft');
+    expect(button).toHaveAttribute('data-tone', 'danger');
+    expect(button).toHaveAttribute('data-size', 'lg');
+    expect(button).toHaveAttribute('data-loading', '');
+  });
+
+  it('defaults to a solid primary medium button', () => {
+    render(<Button>Save</Button>);
+    const button = screen.getByRole('button');
+    expect(button).toHaveAttribute('data-variant', 'solid');
+    expect(button).toHaveAttribute('data-tone', 'primary');
+    expect(button).toHaveAttribute('data-size', 'md');
+    expect(button).not.toHaveAttribute('data-loading');
+  });
+
+  it('keeps custom class names next to kit classes', () => {
     render(<Button className="sui:px-8 custom">Save</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('sui:px-8', 'custom');
-    expect(button).not.toHaveClass('sui:px-4');
+    // Both stay: application styles win through cascade layers, not by removing classes.
+    expect(button).toHaveClass('sui:px-8', 'custom', 'sui:px-4');
   });
 
   describe('keyboard', () => {
@@ -165,19 +188,25 @@ describe('Button', () => {
       const link = screen.getByRole('link', { name: 'Docs' });
       expect(link).toHaveAttribute('href', '/docs');
       expect(link).not.toHaveAttribute('type');
-      expect(link.className).toContain('sui:border-border-strong');
+      expect(link).toHaveAttribute('data-variant', 'outline');
+      expect(link).toHaveAttribute('data-sui-button', '');
       expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
   });
 
   describe('accessibility', () => {
-    it.each(['primary', 'secondary', 'outline', 'ghost', 'danger'] as const)(
-      'has no axe violations for the %s variant',
-      async (variant) => {
-        const { container } = render(<Button variant={variant}>Save</Button>);
-        await expectNoAxeViolations(container);
-      },
-    );
+    it.each(
+      (['solid', 'soft', 'outline', 'ghost'] as const).flatMap((variant) =>
+        (['primary', 'neutral', 'danger'] as const).map((tone) => [variant, tone] as const),
+      ),
+    )('has no axe violations for %s / %s', async (variant, tone) => {
+      const { container } = render(
+        <Button variant={variant} tone={tone}>
+          Save
+        </Button>,
+      );
+      await expectNoAxeViolations(container);
+    });
 
     it('has no axe violations while loading or disabled', async () => {
       const { container } = render(

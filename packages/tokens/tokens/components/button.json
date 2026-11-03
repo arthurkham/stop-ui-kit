@@ -1,0 +1,51 @@
+{
+  "button": {
+    "$type": "color",
+    "$description": "Button tones. A tone is a color, its hover state, the text on it (fg) and the text color used on tints and transparent backgrounds (text). Soft, outline and ghost buttons derive their backgrounds from the tone color using the mix percentages below. Each token is optional at runtime: override it to restyle buttons without touching other components.",
+    "$extensions": {
+      "dev.stop-ui": {
+        "mix": {
+          "soft": 12,
+          "soft-hover": 20,
+          "border": 50
+        }
+      }
+    },
+    "primary": {
+      "$value": "{primary}"
+    },
+    "primary-hover": {
+      "$value": "{primary-hover}"
+    },
+    "primary-fg": {
+      "$value": "{primary-fg}"
+    },
+    "primary-text": {
+      "$value": "{primary}"
+    },
+    "neutral": {
+      "$value": "{neutral}"
+    },
+    "neutral-hover": {
+      "$value": "{neutral-hover}"
+    },
+    "neutral-fg": {
+      "$value": "{neutral-fg}"
+    },
+    "neutral-text": {
+      "$value": "{fg}"
+    },
+    "danger": {
+      "$value": "{danger}"
+    },
+    "danger-hover": {
+      "$value": "{danger-hover}"
+    },
+    "danger-fg": {
+      "$value": "{danger-fg}"
+    },
+    "danger-text": {
+      "$value": "{danger-text}"
+    }
+  }
+}

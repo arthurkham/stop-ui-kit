@@ -1,3 +1,9 @@
 {
-  "tokenSetOrder": ["primitives/color", "primitives/scale", "themes/light", "themes/dark"]
+  "tokenSetOrder": [
+    "primitives/color",
+    "primitives/scale",
+    "themes/light",
+    "themes/dark",
+    "components/button"
+  ]
 }

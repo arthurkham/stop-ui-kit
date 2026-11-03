@@ -12,3 +12,4 @@
 @import 'tailwindcss/utilities.css' layer(components) source(none);
 @import '@stop-ui/tokens/tailwind-theme.css';
 @import '@stop-ui/tokens/tokens.css';
+@import '@stop-ui/tokens/components.css';

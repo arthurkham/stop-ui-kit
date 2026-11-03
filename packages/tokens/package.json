@@ -28,6 +28,7 @@
       "import": "./dist/index.js"
     },
     "./tokens.css": "./dist/tokens.css",
+    "./components.css": "./dist/components.css",
     "./tailwind.css": "./dist/tailwind.css",
     "./tailwind-theme.css": "./dist/tailwind-theme.css",
     "./tokens/*": "./tokens/*",

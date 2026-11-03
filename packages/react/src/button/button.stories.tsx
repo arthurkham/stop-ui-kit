@@ -5,6 +5,10 @@ import { Button } from './button.js';
 const description = `
 Triggers an action, such as saving a form or opening a dialog.
 
+Shape (\`variant\`: solid, soft, outline, ghost) and color (\`tone\`: primary, neutral, danger) are
+independent, so every tone works with every shape. To change button colors or add your own tones and
+shapes, see **Customization → Button** and **Customization → Extending components**.
+
 ## Accessibility
 
 - Renders a native \`<button>\` with \`type="button"\` by default, so it never submits a form by accident.
@@ -15,8 +19,8 @@ Triggers an action, such as saving a form or opening a dialog.
 - **Disabled** uses the native \`disabled\` attribute and removes the button from the tab order. If users need to
   discover why an action is unavailable, explain it next to the button instead.
 - The focus indicator is a 2px outline shown for keyboard focus only (\`:focus-visible\`). It stays visible in
-  forced-colors (Windows High Contrast) mode, where each variant also keeps a visible border.
-- Every variant meets WCAG 2.2 AA contrast in the light and dark themes.
+  forced-colors (Windows High Contrast) mode, where every shape also keeps a visible border.
+- Every tone meets WCAG 2.2 AA contrast in every shape, in the light and dark themes (checked at build time).
 - Animations respect \`prefers-reduced-motion\`.
 
 ### Keyboard
@@ -26,6 +30,11 @@ Triggers an action, such as saving a form or opening a dialog.
 | <kbd>Tab</kbd> / <kbd>Shift</kbd> + <kbd>Tab</kbd> | Moves focus to or away from the button |
 | <kbd>Enter</kbd> | Activates the button |
 | <kbd>Space</kbd> | Activates the button |
+
+## Styling hooks
+
+Every button renders \`data-sui-button\`, \`data-variant\`, \`data-tone\`, \`data-size\` and, while loading,
+\`data-loading\`, so it can be styled from any CSS setup.
 
 ## Rendering as a link
 
@@ -49,7 +58,11 @@ const meta = {
   argTypes: {
     variant: {
       control: 'inline-radio',
-      options: ['primary', 'secondary', 'outline', 'ghost', 'danger'],
+      options: ['solid', 'soft', 'outline', 'ghost'],
+    },
+    tone: {
+      control: 'inline-radio',
+      options: ['primary', 'neutral', 'danger'],
     },
     size: {
       control: 'inline-radio',
@@ -81,33 +94,30 @@ const row: CSSProperties = { display: 'flex', flexWrap: 'wrap', alignItems: 'cen
 
 const source = (code: string) => ({ docs: { source: { code: code.trim(), language: 'tsx' } } });
 
+const variants = ['solid', 'soft', 'outline', 'ghost'] as const;
+const tones = ['primary', 'neutral', 'danger'] as const;
+
 export const Playground: Story = {};
 
-export const Variants: Story = {
+export const VariantsAndTones: Story = {
+  name: 'Variants and tones',
   parameters: source(`
-<Button variant="primary">Primary</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="outline">Outline</Button>
-<Button variant="ghost">Ghost</Button>
-<Button variant="danger">Danger</Button>
+<Button variant="solid" tone="primary">Save</Button>
+<Button variant="soft" tone="neutral">Duplicate</Button>
+<Button variant="outline" tone="neutral">Cancel</Button>
+<Button variant="ghost" tone="danger">Delete</Button>
 `),
   render: (args) => (
-    <div style={row}>
-      <Button {...args} variant="primary">
-        Primary
-      </Button>
-      <Button {...args} variant="secondary">
-        Secondary
-      </Button>
-      <Button {...args} variant="outline">
-        Outline
-      </Button>
-      <Button {...args} variant="ghost">
-        Ghost
-      </Button>
-      <Button {...args} variant="danger">
-        Danger
-      </Button>
+    <div style={{ display: 'grid', gap: 12 }}>
+      {tones.map((tone) => (
+        <div key={tone} style={row}>
+          {variants.map((variant) => (
+            <Button key={variant} {...args} variant={variant} tone={tone}>
+              {`${variant} ${tone}`}
+            </Button>
+          ))}
+        </div>
+      ))}
     </div>
   ),
 };
@@ -184,12 +194,12 @@ export const Disabled: Story = {
 export const AsLink: Story = {
   name: 'As link (asChild)',
   parameters: source(`
-<Button asChild variant="outline">
+<Button asChild variant="outline" tone="neutral">
   <a href="https://github.com">Open GitHub</a>
 </Button>
 `),
   render: () => (
-    <Button asChild variant="outline">
+    <Button asChild variant="outline" tone="neutral">
       <a href="https://github.com">Open GitHub</a>
     </Button>
   ),
@@ -198,15 +208,15 @@ export const AsLink: Story = {
 export const NestedThemes: Story = {
   parameters: source(`
 <section data-sui-theme="light">
-  <Button>Primary</Button>
-  <Button variant="secondary">Secondary</Button>
-  <Button variant="outline">Outline</Button>
+  <Button>Save</Button>
+  <Button variant="soft" tone="neutral">Duplicate</Button>
+  <Button variant="outline" tone="neutral">Cancel</Button>
 </section>
 
 <section data-sui-theme="dark">
-  <Button>Primary</Button>
-  <Button variant="secondary">Secondary</Button>
-  <Button variant="outline">Outline</Button>
+  <Button>Save</Button>
+  <Button variant="soft" tone="neutral">Duplicate</Button>
+  <Button variant="outline" tone="neutral">Cancel</Button>
 </section>
 `),
   render: () => (
@@ -223,9 +233,13 @@ export const NestedThemes: Story = {
             background: 'var(--sui-surface)',
           }}
         >
-          <Button>Primary</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="outline">Outline</Button>
+          <Button>Save</Button>
+          <Button variant="soft" tone="neutral">
+            Duplicate
+          </Button>
+          <Button variant="outline" tone="neutral">
+            Cancel
+          </Button>
         </section>
       ))}
     </div>

@@ -2,6 +2,7 @@
  * Builds every token artifact from the W3C DTCG sources in `tokens/`:
  *
  * - dist/tokens.css          CSS custom properties and themes (plain CSS)
+ * - dist/components.css      Component tone bindings with token fallbacks
  * - dist/tailwind.css        Tailwind preset for applications (`bg-sui-primary`, ...)
  * - dist/tailwind-theme.css  Tailwind theme used to build the kit itself
  * - dist/index.js / .d.ts    Typed token references for JavaScript
@@ -42,6 +43,14 @@ export interface ResolvedTheme {
   foundation: TransformedToken[];
   /** Theme-specific semantic tokens. */
   semantic: TransformedToken[];
+  /** Component tokens. Optional at runtime: emitted as fallbacks, never declared. */
+  component: TransformedToken[];
+}
+
+export interface ComponentMix {
+  soft: number;
+  'soft-hover': number;
+  border: number;
 }
 
 interface DimensionValue {
@@ -137,9 +146,9 @@ export async function loadThemes(): Promise<ResolvedTheme[]> {
       const sets = Object.entries(definition.selectedTokenSets).filter(
         ([, status]) => status !== 'disabled',
       );
-      const enabledFiles = new Set(
-        sets.filter(([, status]) => status === 'enabled').map(([set]) => `tokens/${set}.json`),
-      );
+      const filesWith = (status: TokenSetStatus) =>
+        new Set(sets.filter(([, s]) => s === status).map(([set]) => `tokens/${set}.json`));
+      const enabledFiles = filesWith('enabled');
 
       const dictionary = new StyleDictionary({
         source: sets.map(([set]) => join(tokensDir, `${set}.json`)),
@@ -149,13 +158,17 @@ export async function loadThemes(): Promise<ResolvedTheme[]> {
       });
       const { allTokens } = await dictionary.getPlatformTokens('css');
 
-      const isEnabled = (token: TransformedToken) =>
-        enabledFiles.has(relative(packageRoot, token.filePath).split('\\').join('/'));
+      const fileOf = (token: TransformedToken) =>
+        relative(packageRoot, token.filePath).split('\\').join('/');
+      const isEnabled = (token: TransformedToken) => enabledFiles.has(fileOf(token));
+      const isComponent = (token: TransformedToken) =>
+        fileOf(token).startsWith('tokens/components/');
 
       return {
         id: definition.id,
         foundation: allTokens.filter((token) => !isEnabled(token)),
-        semantic: allTokens.filter(isEnabled),
+        semantic: allTokens.filter((token) => isEnabled(token) && !isComponent(token)),
+        component: allTokens.filter((token) => isEnabled(token) && isComponent(token)),
       };
     }),
   );
@@ -193,7 +206,7 @@ export interface ContrastResult {
 export function checkContrast(themes: ResolvedTheme[], rules: ContrastRule[]): ContrastResult[] {
   return themes.flatMap((theme) => {
     const colors = new Map(
-      theme.semantic
+      [...theme.semantic, ...theme.component]
         .filter((token) => token.$type === 'color')
         .map((token) => [token.path.join('.'), toHex(token.$value as ColorValue)]),
     );
@@ -219,6 +232,96 @@ export function checkContrast(themes: ResolvedTheme[], rules: ContrastRule[]): C
         };
       }),
     );
+  });
+}
+
+/** Composites `color` at `percent` opacity over `background`, like `color-mix(in srgb, …, transparent)`. */
+export function mixOver(color: string, percent: number, background: string): string {
+  const channel = (hex: string, index: number) => Number.parseInt(hex.slice(index, index + 2), 16);
+  const amount = percent / 100;
+  return `#${[1, 3, 5]
+    .map((index) =>
+      Math.round(channel(color, index) * amount + channel(background, index) * (1 - amount))
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('')}`;
+}
+
+/** Tone names of a component group, e.g. `button` → `primary`, `neutral`, `danger`. */
+export function componentTones(theme: ResolvedTheme, component: string): string[] {
+  return theme.component
+    .filter((token) => token.path[0] === component && token.path.length === 2)
+    .map((token) => token.path[1] ?? '')
+    .filter((name) => !/-(hover|fg|text)$/.test(name));
+}
+
+export function readComponentMix(component: string): ComponentMix {
+  const source = readJson(join(tokensDir, 'components', `${component}.json`)) as Record<
+    string,
+    { $extensions?: { 'dev.stop-ui'?: { mix?: ComponentMix } } }
+  >;
+  const mix = source[component]?.$extensions?.['dev.stop-ui']?.mix;
+  if (!mix) {
+    throw new Error(
+      `tokens/components/${component}.json must define $extensions["dev.stop-ui"].mix.`,
+    );
+  }
+  return mix;
+}
+
+/**
+ * Checks every tone of a component in every shape it is used in: text on the solid color and its
+ * hover state, and tone-colored text on the surface and on the derived soft tints.
+ */
+export function checkComponentContrast(
+  themes: ResolvedTheme[],
+  component: string,
+  mix: ComponentMix,
+): ContrastResult[] {
+  return themes.flatMap((theme) => {
+    const colors = new Map(
+      [...theme.semantic, ...theme.component].map((token) => [
+        token.path.join('.'),
+        toHex(token.$value as ColorValue),
+      ]),
+    );
+    const get = (name: string): string => {
+      const color = colors.get(name);
+      if (!color) throw new Error(`Missing token "${name}" in theme "${theme.id}".`);
+      return color;
+    };
+    const surface = get('surface');
+
+    return componentTones(theme, component).flatMap((tone) => {
+      const key = (role: string) => `${component}.${tone}${role ? `-${role}` : ''}`;
+      const color = get(key(''));
+      const text = get(key('text'));
+      const pairs: [string, string, string, string][] = [
+        [key('fg'), get(key('fg')), key(''), color],
+        [key('fg'), get(key('fg')), key('hover'), get(key('hover'))],
+        [key('text'), text, 'surface', surface],
+        [key('text'), text, `${key('')} ${mix.soft}% tint`, mixOver(color, mix.soft, surface)],
+        [
+          key('text'),
+          text,
+          `${key('')} ${mix['soft-hover']}% tint`,
+          mixOver(color, mix['soft-hover'], surface),
+        ],
+      ];
+      return pairs.map(([foreground, fg, background, bg]) => {
+        const ratio = contrastRatio(fg, bg);
+        return {
+          theme: theme.id,
+          foreground,
+          background,
+          ratio,
+          min: 4.5,
+          reason: 'Button text in every shape (WCAG 1.4.3).',
+          passed: ratio >= 4.5,
+        };
+      });
+    });
   });
 }
 
@@ -283,6 +386,48 @@ ${declarations(theme.semantic, '    ')}
 ${declarations(dark.semantic, '      ')}
     }
   }
+}
+`;
+}
+
+const TONE_ROLES = ['', 'hover', 'fg', 'text'] as const;
+
+export function formatComponentsCss(theme: ResolvedTheme): string {
+  const components = [...new Set(theme.component.map((token) => token.path[0] ?? ''))];
+  const byPath = new Map(theme.component.map((token) => [token.path.join('.'), token]));
+
+  const blocks = components.map((component) => {
+    const mix = readComponentMix(component);
+    const host = `[data-sui-${component}]`;
+    const tones = componentTones(theme, component).map((tone) => {
+      const lines = TONE_ROLES.map((role) => {
+        const name = `${tone}${role ? `-${role}` : ''}`;
+        const token = byPath.get(`${component}.${name}`);
+        if (!token) throw new Error(`Missing token ${component}.${name}.`);
+        const target = `--sui-tone${role ? `-${role}` : ''}`;
+        return `    ${target}: var(--sui-${component}-${name}, ${cssValue(token)});`;
+      });
+      return `  ${host}[data-tone='${tone}'] {\n${lines.join('\n')}\n  }`;
+    });
+
+    return `  /* ${component}: shapes derive their backgrounds from the active tone. */
+  ${host} {
+    --sui-tone-soft: color-mix(in srgb, var(--sui-tone) ${mix.soft}%, transparent);
+    --sui-tone-soft-hover: color-mix(in srgb, var(--sui-tone) ${mix['soft-hover']}%, transparent);
+    --sui-tone-border: color-mix(in srgb, var(--sui-tone) ${mix.border}%, transparent);
+  }
+
+${tones.join('\n\n')}`;
+  });
+
+  return `${HEADER}
+/*
+ * Component tokens are optional overrides: each tone binding falls back to a semantic token, so
+ * \`:root { --sui-button-primary: #ea580c; }\` restyles every primary button in every theme.
+ * A custom tone only needs \`--sui-tone\`, \`--sui-tone-hover\`, \`--sui-tone-fg\` and \`--sui-tone-text\`.
+ */
+@layer components {
+${blocks.join('\n\n')}
 }
 `;
 }
@@ -434,10 +579,13 @@ export async function buildTokens(outDir = join(packageRoot, 'dist')): Promise<C
     throw new Error('$themes.json defines no themes.');
   }
 
-  const results = checkContrast(
-    themes,
-    readJson(join(packageRoot, 'contrast.json')) as ContrastRule[],
-  );
+  const components = [...new Set(defaultTheme.component.map((token) => token.path[0] ?? ''))];
+  const results = [
+    ...checkContrast(themes, readJson(join(packageRoot, 'contrast.json')) as ContrastRule[]),
+    ...components.flatMap((component) =>
+      checkComponentContrast(themes, component, readComponentMix(component)),
+    ),
+  ];
   const failures = results.filter((result) => !result.passed);
   if (failures.length > 0) {
     const list = failures
@@ -452,6 +600,7 @@ export async function buildTokens(outDir = join(packageRoot, 'dist')): Promise<C
   const { js, dts } = buildJsModule(defaultTheme);
   mkdirSync(outDir, { recursive: true });
   writeFileSync(join(outDir, 'tokens.css'), formatTokensCss(themes));
+  writeFileSync(join(outDir, 'components.css'), formatComponentsCss(defaultTheme));
   writeFileSync(join(outDir, 'tailwind-theme.css'), formatTailwindTheme(defaultTheme));
   writeFileSync(join(outDir, 'tailwind.css'), formatTailwindPreset(defaultTheme));
   writeFileSync(join(outDir, 'index.js'), js);

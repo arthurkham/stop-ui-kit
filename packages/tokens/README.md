@@ -76,7 +76,7 @@ tokens/
 ├── primitives/scale.json   rem, spacing, radius, text, leading, font weight, motion
 ├── themes/light.json       semantic tokens referencing primitives
 ├── themes/dark.json
-├── components/             component tier
+├── components/button.json  button tones (color, hover, fg, text) and derived tint amounts
 ├── $themes.json            which token sets make up each theme
 └── $metadata.json          token set order
 contrast.json               required contrast for each foreground/background pair
@@ -84,7 +84,9 @@ contrast.json               required contrast for each foreground/background pai
 
 1. Edit the JSON (or let a design tool write it, see below).
 2. Run `pnpm tokens` from the repository root (`pnpm dev` rebuilds automatically on change).
-3. The build fails with a clear message if any pair in `contrast.json` drops below its minimum:
+3. The build fails with a clear message if any pair in `contrast.json` drops below its minimum, or
+   if any component tone is unreadable in any shape (text on the solid color, on tints and on the
+   surface):
 
 ```
 Contrast check failed:

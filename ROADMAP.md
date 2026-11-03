@@ -9,8 +9,9 @@
 - [x] Design tokens in W3C DTCG format generating CSS, a Tailwind preset and TypeScript types
 - [x] Contrast check of every theme at build time
 - [ ] Figma sync (Tokens Studio)
-- [ ] Component tokens and `variant` × `tone` color model
-- [ ] `createX` factories for project-level variants and defaults
+- [x] Component tokens and `variant` × `tone` color model
+- [x] `createButton` factory for project-level tones, shapes and defaults
+- [ ] Factories for every colored component (`createBadge`, `createAlert`, …)
 - [ ] Contract tests shared by all framework adapters
 
 ### Foundations
@@ -24,7 +25,7 @@
 
 ### Components
 
-- [x] Button
+- [x] Button (solid, soft, outline, ghost × primary, neutral, danger)
 - [ ] Label
 - [ ] Input
 - [ ] Textarea

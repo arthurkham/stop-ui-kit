@@ -5,7 +5,8 @@
     "selectedTokenSets": {
       "primitives/color": "source",
       "primitives/scale": "source",
-      "themes/light": "enabled"
+      "themes/light": "enabled",
+      "components/button": "enabled"
     }
   },
   {
@@ -14,7 +15,8 @@
     "selectedTokenSets": {
       "primitives/color": "source",
       "primitives/scale": "source",
-      "themes/dark": "enabled"
+      "themes/dark": "enabled",
+      "components/button": "enabled"
     }
   }
 ]
