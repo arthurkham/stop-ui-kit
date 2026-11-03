@@ -1,0 +1,116 @@
+{
+  "rem": {
+    "$type": "dimension",
+    "$value": {
+      "value": 1,
+      "unit": "rem"
+    },
+    "$description": "Root scale. Every other rem-based token is emitted relative to this value, so hosts can rescale the whole kit with one variable."
+  },
+  "spacing": {
+    "$type": "dimension",
+    "$value": {
+      "value": 0.25,
+      "unit": "rem"
+    },
+    "$description": "Base spacing unit (4px at the default scale)."
+  },
+  "radius": {
+    "$type": "dimension",
+    "sm": {
+      "$value": {
+        "value": 0.25,
+        "unit": "rem"
+      }
+    },
+    "md": {
+      "$value": {
+        "value": 0.375,
+        "unit": "rem"
+      }
+    },
+    "lg": {
+      "$value": {
+        "value": 0.5,
+        "unit": "rem"
+      }
+    },
+    "full": {
+      "$value": {
+        "value": 9999,
+        "unit": "px"
+      }
+    }
+  },
+  "text": {
+    "$type": "dimension",
+    "$description": "Font sizes.",
+    "xs": {
+      "$value": {
+        "value": 0.75,
+        "unit": "rem"
+      }
+    },
+    "sm": {
+      "$value": {
+        "value": 0.875,
+        "unit": "rem"
+      }
+    },
+    "base": {
+      "$value": {
+        "value": 1,
+        "unit": "rem"
+      }
+    },
+    "lg": {
+      "$value": {
+        "value": 1.125,
+        "unit": "rem"
+      }
+    }
+  },
+  "leading": {
+    "$type": "number",
+    "$description": "Line heights matching the font sizes.",
+    "xs": {
+      "$value": 1.3333
+    },
+    "sm": {
+      "$value": 1.4286
+    },
+    "base": {
+      "$value": 1.5
+    },
+    "lg": {
+      "$value": 1.5556
+    }
+  },
+  "font-weight": {
+    "$type": "fontWeight",
+    "normal": {
+      "$value": 400
+    },
+    "medium": {
+      "$value": 500
+    },
+    "semibold": {
+      "$value": 600
+    }
+  },
+  "duration": {
+    "$type": "duration",
+    "fast": {
+      "$value": {
+        "value": 150,
+        "unit": "ms"
+      }
+    }
+  },
+  "easing": {
+    "$type": "cubicBezier",
+    "standard": {
+      "$value": [0.4, 0, 0.2, 1]
+    }
+  }
+}

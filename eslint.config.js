@@ -24,6 +24,19 @@ export default defineConfig([
     extends: [reactHooks.configs.flat['recommended-latest'], jsxA11y.flatConfigs.strict],
   },
   {
+    files: ['**/*.stories.tsx'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'Literal[value=/sui:/], TemplateElement[value.raw=/sui:/]',
+          message:
+            'Do not use kit utility classes in stories: they only exist in the package stylesheet when a component uses them, so copied examples would break. Use inline styles for layout.',
+        },
+      ],
+    },
+  },
+  {
     rules: {
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],

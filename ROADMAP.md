@@ -6,7 +6,9 @@
 
 - [x] Monorepo: `@stop-ui/tokens`, `@stop-ui/core`, `@stop-ui/styles`, `@stop-ui/react`
 - [x] One shared version for all packages (Changesets)
-- [ ] Design tokens in W3C DTCG format generating CSS, a Tailwind preset and TypeScript types
+- [x] Design tokens in W3C DTCG format generating CSS, a Tailwind preset and TypeScript types
+- [x] Contrast check of every theme at build time
+- [ ] Figma sync (Tokens Studio)
 - [ ] Component tokens and `variant` × `tone` color model
 - [ ] `createX` factories for project-level variants and defaults
 - [ ] Contract tests shared by all framework adapters

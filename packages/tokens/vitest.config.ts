@@ -4,5 +4,6 @@ export default defineProject({
   test: {
     name: 'tokens',
     environment: 'node',
+    include: ['scripts/**/*.test.ts'],
   },
 });

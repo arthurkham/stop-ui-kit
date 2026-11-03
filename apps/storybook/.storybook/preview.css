@@ -1,11 +1,10 @@
+/*
+ * The same stylesheet the package ships: Tailwind setup plus the class names used by the
+ * recipes. Stories and Storybook chrome use inline styles, so nothing here can leak into
+ * examples that would not work in an application.
+ */
 @import '@stop-ui/styles/tailwind.css';
-
-/* Stories may use utilities for layout that must not ship with the package. */
-@source '../../../packages/react/src';
 @source '../../../packages/styles/src/recipes';
-@source '../stories';
-@source '.';
-@source not '../../../packages/**/*.test.{ts,tsx}';
 
 /* The kit inherits the host font; give the Storybook "host" a sensible one. */
 body {

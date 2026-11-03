@@ -1,0 +1,50 @@
+[
+  {
+    "foreground": "fg",
+    "background": ["surface", "surface-subtle", "secondary"],
+    "min": 7,
+    "reason": "Body text targets WCAG AAA (1.4.6)."
+  },
+  {
+    "foreground": "fg",
+    "background": ["secondary-hover"],
+    "min": 4.5,
+    "reason": "Text on hovered ghost and outline buttons (WCAG 1.4.3)."
+  },
+  {
+    "foreground": "fg-muted",
+    "background": ["surface", "surface-subtle"],
+    "min": 4.5,
+    "reason": "Secondary text (WCAG 1.4.3)."
+  },
+  {
+    "foreground": "primary-fg",
+    "background": ["primary", "primary-hover"],
+    "min": 4.5,
+    "reason": "Text on primary buttons (WCAG 1.4.3)."
+  },
+  {
+    "foreground": "secondary-fg",
+    "background": ["secondary", "secondary-hover"],
+    "min": 4.5,
+    "reason": "Text on secondary buttons (WCAG 1.4.3)."
+  },
+  {
+    "foreground": "danger-fg",
+    "background": ["danger", "danger-hover"],
+    "min": 4.5,
+    "reason": "Text on danger buttons (WCAG 1.4.3)."
+  },
+  {
+    "foreground": "border-strong",
+    "background": ["surface"],
+    "min": 3,
+    "reason": "Control boundaries (WCAG 1.4.11)."
+  },
+  {
+    "foreground": "ring",
+    "background": ["surface"],
+    "min": 3,
+    "reason": "Focus indicator (WCAG 1.4.11, 2.4.13)."
+  }
+]
