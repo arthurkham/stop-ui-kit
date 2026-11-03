@@ -9,5 +9,13 @@
   "privatePackages": {
     "version": false,
     "tag": false
-  }
+  },
+  "changedFilePatterns": [
+    "**",
+    "!**/*.stories.tsx",
+    "!**/*.test.{ts,tsx}",
+    "!test/**",
+    "!snapshots/**",
+    "!vitest.config.ts"
+  ]
 }
