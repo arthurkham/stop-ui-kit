@@ -1,0 +1,3 @@
+{
+  "tokenSetOrder": ["primitives/color", "primitives/scale", "themes/light", "themes/dark"]
+}

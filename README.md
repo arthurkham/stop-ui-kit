@@ -23,14 +23,23 @@ Accessibility is the core feature of this kit, not an afterthought.
 
 ## Packages
 
-| Package                                | Description                                                          |
-| -------------------------------------- | -------------------------------------------------------------------- |
-| [`@stop-ui/react`](./packages/react)   | React components. Installs everything below automatically.           |
-| [`@stop-ui/core`](./packages/core)     | Framework-agnostic behavior and accessibility primitives.            |
-| [`@stop-ui/styles`](./packages/styles) | Style recipes and the compiled stylesheet, shared by all frameworks. |
-| [`@stop-ui/tokens`](./packages/tokens) | Design tokens and themes as plain CSS custom properties.             |
+| Package                                | Description                                                                           |
+| -------------------------------------- | ------------------------------------------------------------------------------------- |
+| [`@stop-ui/react`](./packages/react)   | React components. Installs everything below automatically.                            |
+| [`@stop-ui/core`](./packages/core)     | Framework-agnostic behavior and accessibility primitives.                             |
+| [`@stop-ui/styles`](./packages/styles) | Style recipes and the compiled stylesheet, shared by all frameworks.                  |
+| [`@stop-ui/tokens`](./packages/tokens) | Design tokens (W3C DTCG) compiled to CSS variables, a Tailwind preset and TypeScript. |
 
 Vue 3 support is planned (`@stop-ui/vue`), built on the same core, styles and tokens.
+
+## Design tokens as the single source of truth
+
+Every color, size and radius comes from [W3C DTCG](https://www.designtokens.org/) design tokens.
+The build turns them into CSS variables, a Tailwind preset for your own markup and typed
+JavaScript, and **fails if any text or control color drops below WCAG contrast**. Rebranding or
+adding a color scheme is a change to a few JSON values, not a hunt through component styles.
+The token files follow the Tokens Studio layout, ready for Figma sync.
+See [`@stop-ui/tokens`](./packages/tokens).
 
 ## Installation
 
@@ -65,7 +74,9 @@ Set `data-sui-theme` to `light`, `dark` or `system` on any element. Themes can b
 ```
 
 Every color is a semantic CSS custom property (`--sui-primary`, `--sui-surface`, `--sui-fg`, …),
-so a brand theme only needs to override a few variables.
+so a brand theme only needs to override a few variables. To use the same tokens in your own
+Tailwind markup (`bg-sui-primary`, `rounded-sui-md`), add the
+[Tailwind preset](./packages/tokens#tailwind-preset).
 
 ## Using alongside other CSS
 

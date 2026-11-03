@@ -1,0 +1,20 @@
+[
+  {
+    "id": "light",
+    "name": "Light",
+    "selectedTokenSets": {
+      "primitives/color": "source",
+      "primitives/scale": "source",
+      "themes/light": "enabled"
+    }
+  },
+  {
+    "id": "dark",
+    "name": "Dark",
+    "selectedTokenSets": {
+      "primitives/color": "source",
+      "primitives/scale": "source",
+      "themes/dark": "enabled"
+    }
+  }
+]

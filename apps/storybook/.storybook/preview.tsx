@@ -13,7 +13,13 @@ const withTheme: Decorator = (Story, context) => {
   return (
     <div
       data-sui-theme={theme}
-      className={`sui:bg-surface sui:p-6 sui:text-fg ${isCanvas ? 'sui:min-h-screen sui:box-border' : ''}`}
+      style={{
+        background: 'var(--sui-surface)',
+        color: 'var(--sui-fg)',
+        padding: 24,
+        boxSizing: 'border-box',
+        minHeight: isCanvas ? '100vh' : undefined,
+      }}
     >
       <Story />
     </div>

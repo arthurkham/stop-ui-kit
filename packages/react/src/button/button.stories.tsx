@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { Button } from './button.js';
 
 const description = `
@@ -72,11 +72,27 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+/*
+ * Story layout uses inline styles on purpose: kit utility classes only exist in the package
+ * stylesheet when a component uses them, so copying them from an example would silently fail.
+ * Stories with a custom render function show a hand-written snippet of real usage instead.
+ */
+const row: CSSProperties = { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12 };
+
+const source = (code: string) => ({ docs: { source: { code: code.trim(), language: 'tsx' } } });
+
 export const Playground: Story = {};
 
 export const Variants: Story = {
+  parameters: source(`
+<Button variant="primary">Primary</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="danger">Danger</Button>
+`),
   render: (args) => (
-    <div className="sui:flex sui:flex-wrap sui:items-center sui:gap-3">
+    <div style={row}>
       <Button {...args} variant="primary">
         Primary
       </Button>
@@ -97,8 +113,13 @@ export const Variants: Story = {
 };
 
 export const Sizes: Story = {
+  parameters: source(`
+<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>
+`),
   render: (args) => (
-    <div className="sui:flex sui:flex-wrap sui:items-center sui:gap-3">
+    <div style={row}>
       <Button {...args} size="sm">
         Small
       </Button>
@@ -123,11 +144,11 @@ function LoadingDemo() {
   };
 
   return (
-    <div className="sui:flex sui:flex-col sui:items-start sui:gap-3">
-      <Button loading={loading} onClick={save}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 12 }}>
+      <Button loading={loading} loadingLabel="Saving" onClick={save}>
         {loading ? 'Saving…' : 'Save'}
       </Button>
-      <p className="sui:m-0 sui:text-sm sui:text-fg-muted">
+      <p style={{ margin: 0, fontSize: 14, color: 'var(--sui-fg-muted)' }}>
         Activate with the keyboard: focus stays on the button while it is loading.
       </p>
     </div>
@@ -135,6 +156,22 @@ function LoadingDemo() {
 }
 
 export const Loading: Story = {
+  parameters: source(`
+const [saving, setSaving] = useState(false);
+
+async function save() {
+  setSaving(true);
+  try {
+    await saveSettings();
+  } finally {
+    setSaving(false);
+  }
+}
+
+<Button loading={saving} loadingLabel="Saving" onClick={save}>
+  {saving ? 'Saving…' : 'Save'}
+</Button>
+`),
   render: () => <LoadingDemo />,
 };
 
@@ -146,6 +183,11 @@ export const Disabled: Story = {
 
 export const AsLink: Story = {
   name: 'As link (asChild)',
+  parameters: source(`
+<Button asChild variant="outline">
+  <a href="https://github.com">Open GitHub</a>
+</Button>
+`),
   render: () => (
     <Button asChild variant="outline">
       <a href="https://github.com">Open GitHub</a>
@@ -154,18 +196,37 @@ export const AsLink: Story = {
 };
 
 export const NestedThemes: Story = {
+  parameters: source(`
+<section data-sui-theme="light">
+  <Button>Primary</Button>
+  <Button variant="secondary">Secondary</Button>
+  <Button variant="outline">Outline</Button>
+</section>
+
+<section data-sui-theme="dark">
+  <Button>Primary</Button>
+  <Button variant="secondary">Secondary</Button>
+  <Button variant="outline">Outline</Button>
+</section>
+`),
   render: () => (
-    <div className="sui:flex sui:flex-wrap sui:gap-4">
+    <div style={{ ...row, alignItems: 'stretch', gap: 16 }}>
       {(['light', 'dark'] as const).map((theme) => (
-        <div
+        <section
           key={theme}
           data-sui-theme={theme}
-          className="sui:flex sui:flex-wrap sui:gap-3 sui:rounded-lg sui:border sui:border-solid sui:border-border sui:bg-surface sui:p-4"
+          style={{
+            ...row,
+            padding: 16,
+            borderRadius: 'var(--sui-radius-lg)',
+            border: '1px solid var(--sui-border)',
+            background: 'var(--sui-surface)',
+          }}
         >
           <Button>Primary</Button>
           <Button variant="secondary">Secondary</Button>
           <Button variant="outline">Outline</Button>
-        </div>
+        </section>
       ))}
     </div>
   ),

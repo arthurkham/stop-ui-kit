@@ -1,0 +1,67 @@
+{
+  "$type": "color",
+  "surface": {
+    "$value": "{color.gray.950}",
+    "$description": "Page and component background."
+  },
+  "surface-subtle": {
+    "$value": "{color.gray.900}",
+    "$description": "Subtle background for grouped content."
+  },
+  "fg": {
+    "$value": "{color.gray.50}",
+    "$description": "Default text."
+  },
+  "fg-muted": {
+    "$value": "{color.gray.400}",
+    "$description": "Secondary text."
+  },
+  "border": {
+    "$value": "{color.gray.800}",
+    "$description": "Decorative borders and dividers."
+  },
+  "border-strong": {
+    "$value": "{color.gray.500}",
+    "$description": "Borders that identify a control (WCAG 1.4.11)."
+  },
+  "primary": {
+    "$value": "{color.green.400}",
+    "$description": "Primary actions and brand accent."
+  },
+  "primary-hover": {
+    "$value": "{color.green.300}",
+    "$description": "Primary hover state."
+  },
+  "primary-fg": {
+    "$value": "{color.green.950}",
+    "$description": "Text on primary."
+  },
+  "secondary": {
+    "$value": "{color.gray.800}",
+    "$description": "Secondary actions and hover backgrounds."
+  },
+  "secondary-hover": {
+    "$value": "{color.gray.700}",
+    "$description": "Secondary hover state."
+  },
+  "secondary-fg": {
+    "$value": "{color.gray.50}",
+    "$description": "Text on secondary."
+  },
+  "danger": {
+    "$value": "{color.red.400}",
+    "$description": "Destructive actions."
+  },
+  "danger-hover": {
+    "$value": "{color.red.300}",
+    "$description": "Danger hover state."
+  },
+  "danger-fg": {
+    "$value": "{color.red.950}",
+    "$description": "Text on danger."
+  },
+  "ring": {
+    "$value": "{color.green.400}",
+    "$description": "Focus indicator."
+  }
+}

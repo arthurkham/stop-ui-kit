@@ -1,7 +1,7 @@
 {
   "name": "@stop-ui/tokens",
   "version": "0.0.0",
-  "description": "Design tokens and themes for Stop UI as CSS custom properties.",
+  "description": "Stop UI design tokens: W3C DTCG sources compiled to CSS custom properties, a Tailwind preset and typed JavaScript.",
   "license": "MIT",
   "author": "Artur Khomenko",
   "homepage": "https://github.com/arthurkham/stop-ui-kit#readme",
@@ -18,15 +18,28 @@
     "**/*.css"
   ],
   "files": [
-    "src/*.css"
+    "dist",
+    "tokens",
+    "contrast.json"
   ],
   "exports": {
-    "./tokens.css": "./src/tokens.css",
-    "./tailwind-theme.css": "./src/tailwind-theme.css",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tokens.css": "./dist/tokens.css",
+    "./tailwind.css": "./dist/tailwind.css",
+    "./tailwind-theme.css": "./dist/tailwind-theme.css",
+    "./tokens/*": "./tokens/*",
     "./package.json": "./package.json"
   },
   "scripts": {
+    "build": "node scripts/build.ts",
+    "dev": "node --watch-path=tokens --watch-path=contrast.json scripts/build.ts",
     "typecheck": "tsc --noEmit",
-    "lint:package": "publint --strict --pack pnpm"
+    "lint:package": "node ../../tooling/lint-package.js"
+  },
+  "devDependencies": {
+    "style-dictionary": "^5.7.1"
   }
 }

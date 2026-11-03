@@ -7,9 +7,10 @@
     "url": "git+https://github.com/arthurkham/stop-ui-kit.git"
   },
   "scripts": {
-    "dev": "pnpm --filter @stop-ui/storybook dev",
+    "dev": "pnpm tokens && pnpm --parallel --filter @stop-ui/tokens --filter @stop-ui/storybook dev",
+    "tokens": "pnpm --filter @stop-ui/tokens build",
     "build": "pnpm --filter \"./packages/**\" build",
-    "build:storybook": "pnpm --filter @stop-ui/storybook build",
+    "build:storybook": "pnpm tokens && pnpm --filter @stop-ui/storybook build",
     "typecheck": "pnpm -r typecheck && tsc -p tsconfig.node.json",
     "lint": "eslint .",
     "lint:package": "pnpm --filter \"./packages/**\" lint:package",
