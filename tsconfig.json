@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/tokens" },
+    { "path": "./packages/core" },
+    { "path": "./packages/styles" },
+    { "path": "./packages/react" },
+    { "path": "./apps/storybook" },
+    { "path": "./tooling/test-utils" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}

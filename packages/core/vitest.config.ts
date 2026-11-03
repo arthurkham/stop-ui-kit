@@ -1,0 +1,11 @@
+import { defineProject } from 'vitest/config';
+
+export default defineProject({
+  test: {
+    name: 'core',
+    environment: 'jsdom',
+    setupFiles: ['./test/setup.ts'],
+    include: ['src/**/*.test.ts'],
+    restoreMocks: true,
+  },
+});

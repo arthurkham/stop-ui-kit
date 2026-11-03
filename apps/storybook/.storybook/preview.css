@@ -1,0 +1,14 @@
+@import '@stop-ui/styles/tailwind.css';
+
+/* Stories may use utilities for layout that must not ship with the package. */
+@source '../../../packages/react/src';
+@source '../../../packages/styles/src/recipes';
+@source '../stories';
+@source '.';
+@source not '../../../packages/**/*.test.{ts,tsx}';
+
+/* The kit inherits the host font; give the Storybook "host" a sensible one. */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}

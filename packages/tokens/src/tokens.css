@@ -1,0 +1,133 @@
+/*
+ * Stop UI design tokens (plain CSS, no build step required)
+ *
+ * 1. Scale      `--sui-rem` drives every size in the kit. Hosts that change the root
+ *               font size (e.g. Bootstrap 3 sets `html { font-size: 10px }`) can restore
+ *               the intended scale with `:root { --sui-rem: 16px; }`.
+ * 2. Primitives Raw palette steps (`--sui-green-*`, `--sui-gray-*`, `--sui-red-*`).
+ * 3. Semantic   Role-based tokens (`--sui-surface`, `--sui-primary`, ...). Components use
+ *               only these, and they are the public theming surface.
+ *
+ * Themes are applied with `data-sui-theme="light" | "dark" | "system"` on any element.
+ * Custom properties inherit, so themes can be nested.
+ */
+
+@layer theme {
+  :root,
+  :host {
+    --sui-rem: 1rem;
+
+    --sui-green-50: #ebf9f0;
+    --sui-green-100: #d6f4e1;
+    --sui-green-200: #b3e8c8;
+    --sui-green-300: #87d5a8;
+    --sui-green-400: #57b884;
+    --sui-green-500: #309564;
+    --sui-green-600: #14764a;
+    --sui-green-700: #085c38;
+    --sui-green-800: #03472a;
+    --sui-green-900: #03351e;
+    --sui-green-950: #0b2f1d;
+
+    --sui-gray-50: #f8fbf9;
+    --sui-gray-100: #f0f6f2;
+    --sui-gray-200: #e0e6e2;
+    --sui-gray-300: #d0d6d2;
+    --sui-gray-400: #9ca19e;
+    --sui-gray-500: #6e7470;
+    --sui-gray-600: #505451;
+    --sui-gray-700: #3c413e;
+    --sui-gray-800: #242926;
+    --sui-gray-900: #151917;
+    --sui-gray-950: #080a09;
+
+    --sui-red-50: #fef2f1;
+    --sui-red-100: #ffe2df;
+    --sui-red-200: #ffcbc5;
+    --sui-red-300: #ffa59d;
+    --sui-red-400: #ff6761;
+    --sui-red-500: #fb2c38;
+    --sui-red-600: #e30025;
+    --sui-red-700: #be021e;
+    --sui-red-800: #9f0619;
+    --sui-red-900: #82171b;
+    --sui-red-950: #46080a;
+  }
+
+  /*
+   * Light theme (default). All pairs meet WCAG 2.2 AA; body text meets AAA.
+   * `system` starts from light values so it is correct even inside a dark subtree.
+   */
+  :root,
+  :host,
+  [data-sui-theme='light'],
+  [data-sui-theme='system'] {
+    --sui-surface: #ffffff;
+    --sui-surface-subtle: var(--sui-gray-100);
+    --sui-fg: var(--sui-gray-900);
+    --sui-fg-muted: var(--sui-gray-600);
+    --sui-border: var(--sui-gray-200);
+    --sui-border-strong: var(--sui-gray-500);
+    --sui-primary: var(--sui-green-950);
+    --sui-primary-hover: var(--sui-green-800);
+    --sui-primary-fg: #ffffff;
+    --sui-secondary: var(--sui-gray-100);
+    --sui-secondary-hover: var(--sui-gray-200);
+    --sui-secondary-fg: var(--sui-gray-900);
+    --sui-danger: var(--sui-red-600);
+    --sui-danger-hover: var(--sui-red-700);
+    --sui-danger-fg: #ffffff;
+    --sui-ring: var(--sui-green-600);
+  }
+
+  [data-sui-theme='light'] {
+    color-scheme: light;
+  }
+
+  /* Dark theme. Keep in sync with the `system` block below (enforced by tests). */
+  [data-sui-theme='dark'] {
+    color-scheme: dark;
+    --sui-surface: var(--sui-gray-950);
+    --sui-surface-subtle: var(--sui-gray-900);
+    --sui-fg: var(--sui-gray-50);
+    --sui-fg-muted: var(--sui-gray-400);
+    --sui-border: var(--sui-gray-800);
+    --sui-border-strong: var(--sui-gray-500);
+    --sui-primary: var(--sui-green-400);
+    --sui-primary-hover: var(--sui-green-300);
+    --sui-primary-fg: var(--sui-green-950);
+    --sui-secondary: var(--sui-gray-800);
+    --sui-secondary-hover: var(--sui-gray-700);
+    --sui-secondary-fg: var(--sui-gray-50);
+    --sui-danger: var(--sui-red-400);
+    --sui-danger-hover: var(--sui-red-300);
+    --sui-danger-fg: var(--sui-red-950);
+    --sui-ring: var(--sui-green-400);
+  }
+
+  [data-sui-theme='system'] {
+    color-scheme: light dark;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-sui-theme='system'] {
+      color-scheme: dark;
+      --sui-surface: var(--sui-gray-950);
+      --sui-surface-subtle: var(--sui-gray-900);
+      --sui-fg: var(--sui-gray-50);
+      --sui-fg-muted: var(--sui-gray-400);
+      --sui-border: var(--sui-gray-800);
+      --sui-border-strong: var(--sui-gray-500);
+      --sui-primary: var(--sui-green-400);
+      --sui-primary-hover: var(--sui-green-300);
+      --sui-primary-fg: var(--sui-green-950);
+      --sui-secondary: var(--sui-gray-800);
+      --sui-secondary-hover: var(--sui-gray-700);
+      --sui-secondary-fg: var(--sui-gray-50);
+      --sui-danger: var(--sui-red-400);
+      --sui-danger-hover: var(--sui-red-300);
+      --sui-danger-fg: var(--sui-red-950);
+      --sui-ring: var(--sui-green-400);
+    }
+  }
+}

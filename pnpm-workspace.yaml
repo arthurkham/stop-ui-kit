@@ -1,0 +1,11 @@
+packages:
+  - packages/*
+  - apps/*
+  - tooling/*
+
+allowBuilds:
+  esbuild: false
+
+# Do not install package versions published less than 3 days ago (in minutes).
+# Protects against compromised releases that are usually caught within hours.
+minimumReleaseAge: 4320

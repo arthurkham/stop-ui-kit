@@ -1,0 +1,50 @@
+{
+  "name": "@stop-ui/styles",
+  "version": "0.0.0",
+  "description": "Framework-agnostic style recipes and the compiled stylesheet for Stop UI.",
+  "license": "MIT",
+  "author": "Artur Khomenko",
+  "homepage": "https://github.com/arthurkham/stop-ui-kit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arthurkham/stop-ui-kit.git",
+    "directory": "packages/styles"
+  },
+  "bugs": {
+    "url": "https://github.com/arthurkham/stop-ui-kit/issues"
+  },
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./dist/styles.css",
+    "./tailwind.css": "./src/tailwind.css",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./styles.css": "./dist/styles.css",
+      "./package.json": "./package.json"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint:package": "node ../../tooling/lint-package.js"
+  },
+  "dependencies": {
+    "@stop-ui/tokens": "workspace:^",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.7.0"
+  }
+}

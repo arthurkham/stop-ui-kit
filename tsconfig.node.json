@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "types": ["node"]
+  },
+  "include": [
+    "vitest.config.ts",
+    "tooling/vite-library.ts",
+    "packages/*/vite.config.ts",
+    "packages/*/vitest.config.ts",
+    "apps/*/vite.config.ts"
+  ]
+}

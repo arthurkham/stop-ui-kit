@@ -1,0 +1,8 @@
+@import './tailwind.css';
+
+/*
+ * All class names live in recipes, so framework packages contain no styling of their own
+ * and every framework renders identical markup.
+ */
+@source './recipes';
+@source not './**/*.test.ts';

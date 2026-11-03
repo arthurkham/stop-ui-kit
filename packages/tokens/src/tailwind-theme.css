@@ -1,0 +1,45 @@
+/*
+ * Maps Stop UI tokens onto Tailwind theme variables. Used to build the kit's stylesheet,
+ * where Tailwind runs with `prefix(sui)`; every size is derived from `--sui-rem`.
+ */
+
+@theme static {
+  --spacing: calc(var(--sui-rem) * 0.25);
+
+  --text-*: initial;
+  --text-xs: calc(var(--sui-rem) * 0.75);
+  --text-xs--line-height: calc(1 / 0.75);
+  --text-sm: calc(var(--sui-rem) * 0.875);
+  --text-sm--line-height: calc(1.25 / 0.875);
+  --text-base: var(--sui-rem);
+  --text-base--line-height: 1.5;
+  --text-lg: calc(var(--sui-rem) * 1.125);
+  --text-lg--line-height: calc(1.75 / 1.125);
+
+  --radius-*: initial;
+  --radius-sm: calc(var(--sui-rem) * 0.25);
+  --radius-md: calc(var(--sui-rem) * 0.375);
+  --radius-lg: calc(var(--sui-rem) * 0.5);
+  --radius-full: 9999px;
+}
+
+/* Utilities reference the semantic tokens directly, e.g. `sui:bg-primary`. */
+@theme inline {
+  --color-*: initial;
+  --color-surface: var(--sui-surface);
+  --color-surface-subtle: var(--sui-surface-subtle);
+  --color-fg: var(--sui-fg);
+  --color-fg-muted: var(--sui-fg-muted);
+  --color-border: var(--sui-border);
+  --color-border-strong: var(--sui-border-strong);
+  --color-primary: var(--sui-primary);
+  --color-primary-hover: var(--sui-primary-hover);
+  --color-primary-fg: var(--sui-primary-fg);
+  --color-secondary: var(--sui-secondary);
+  --color-secondary-hover: var(--sui-secondary-hover);
+  --color-secondary-fg: var(--sui-secondary-fg);
+  --color-danger: var(--sui-danger);
+  --color-danger-hover: var(--sui-danger-hover);
+  --color-danger-fg: var(--sui-danger-fg);
+  --color-ring: var(--sui-ring);
+}
