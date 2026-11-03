@@ -1,4 +1,6 @@
 import type { Decorator, Preview } from '@storybook/react-vite';
+// The layer order comes first, as an application with legacy CSS would declare it.
+import './layers.css';
 import './preview.css';
 
 const themes = ['light', 'dark', 'system'] as const;

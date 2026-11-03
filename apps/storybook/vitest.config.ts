@@ -1,7 +1,8 @@
 import { join } from 'node:path';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
-import { defineConfig } from 'vitest/config';
+import { defineConfig, mergeConfig } from 'vitest/config';
+import viteConfig from './vite.config.js';
 
 type BrowserName = 'chromium' | 'firefox' | 'webkit';
 
@@ -14,22 +15,27 @@ const list = (value: string | undefined, fallback: string) =>
 const browsers = list(process.env.BROWSERS, 'chromium,firefox,webkit') as BrowserName[];
 const themes = list(process.env.THEMES, 'light,dark');
 
-export default defineConfig({
-  plugins: [storybookTest({ configDir: join(import.meta.dirname, '.storybook') })],
-  test: {
-    projects: themes.map((theme) => ({
-      extends: true,
-      define: { __STORYBOOK_THEME__: JSON.stringify(theme) },
-      test: {
-        name: `storybook (${theme})`,
-        browser: {
-          enabled: true,
-          headless: true,
-          provider: playwright(),
-          instances: browsers.map((browser) => ({ browser })),
+// Reuse Storybook's Vite config (React and Tailwind plugins), so stories are tested with the
+// same compiled CSS that Storybook and applications use.
+export default mergeConfig(
+  viteConfig,
+  defineConfig({
+    plugins: [storybookTest({ configDir: join(import.meta.dirname, '.storybook') })],
+    test: {
+      projects: themes.map((theme) => ({
+        extends: true,
+        define: { __STORYBOOK_THEME__: JSON.stringify(theme) },
+        test: {
+          name: `storybook (${theme})`,
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright(),
+            instances: browsers.map((browser) => ({ browser })),
+          },
+          setupFiles: ['./.storybook/vitest.setup.ts'],
         },
-        setupFiles: ['./.storybook/vitest.setup.ts'],
-      },
-    })),
-  },
-});
+      })),
+    },
+  }),
+);
