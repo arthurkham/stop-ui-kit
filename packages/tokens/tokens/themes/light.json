@@ -36,17 +36,17 @@
     "$value": "{color.white}",
     "$description": "Text on primary."
   },
-  "secondary": {
-    "$value": "{color.gray.100}",
-    "$description": "Secondary actions and hover backgrounds."
-  },
-  "secondary-hover": {
-    "$value": "{color.gray.200}",
-    "$description": "Secondary hover state."
-  },
-  "secondary-fg": {
+  "neutral": {
     "$value": "{color.gray.900}",
-    "$description": "Text on secondary."
+    "$description": "Strong neutral color for neutral actions."
+  },
+  "neutral-hover": {
+    "$value": "{color.gray.700}",
+    "$description": "Neutral hover state."
+  },
+  "neutral-fg": {
+    "$value": "{color.white}",
+    "$description": "Text on neutral."
   },
   "danger": {
     "$value": "{color.red.600}",
@@ -59,6 +59,10 @@
   "danger-fg": {
     "$value": "{color.white}",
     "$description": "Text on danger."
+  },
+  "danger-text": {
+    "$value": "{color.red.700}",
+    "$description": "Danger-colored text on surfaces and light tints."
   },
   "ring": {
     "$value": "{color.green.600}",

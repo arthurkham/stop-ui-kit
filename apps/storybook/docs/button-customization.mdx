@@ -1,0 +1,200 @@
+import { Canvas, Meta, Source } from '@storybook/addon-docs/blocks';
+import * as Examples from '../stories/customization/button.stories';
+
+<Meta title="Customization/Button" />
+
+# Customizing buttons
+
+Designs change: the brand color moves, a campaign needs green buttons, a product wants pill-shaped
+actions. Stop UI lets you make each of these changes **where it belongs**, without overriding
+component styles.
+
+| You want to…                                            | Use                           | Where                           |
+| ------------------------------------------------------- | ----------------------------- | ------------------------------- |
+| Change a button color everywhere, with contrast checked | Component tokens in DTCG JSON | `tokens/components/button.json` |
+| Change a button color in your application               | Component tokens in CSS       | Your stylesheet                 |
+| Add a new color                                         | `createButton({ tones })`     | `app/ui/button.tsx`             |
+| Add a new shape                                         | `createButton({ variants })`  | `app/ui/button.tsx`             |
+| Change defaults                                         | `createButton({ defaults })`  | `app/ui/button.tsx`             |
+| Restyle from any CSS setup                              | Styling hooks (`data-*`)      | Your stylesheet                 |
+| Adjust one button                                       | `className` / `style`         | The call site                   |
+
+Shape (`variant`) and color (`tone`) are independent. Every shape reads its colors from the active
+tone, so a color change or a new tone works with **solid, soft, outline and ghost** at once.
+
+## Change the color of buttons
+
+Each tone has four tokens. Soft, outline and ghost backgrounds are derived from the tone color.
+
+| Token                       | Used for                                                 |
+| --------------------------- | -------------------------------------------------------- |
+| `--sui-button-<tone>`       | Solid background, base of soft tints and outline borders |
+| `--sui-button-<tone>-hover` | Solid background on hover                                |
+| `--sui-button-<tone>-fg`    | Text on the solid background                             |
+| `--sui-button-<tone>-text`  | Text on soft tints and transparent backgrounds           |
+
+Button tokens default to the semantic tokens (`--sui-primary`, …), so changing them affects buttons
+only: links, focus rings and other components keep the brand color.
+
+### In the design tokens (recommended)
+
+Edit `tokens/components/button.json` (this example assumes an `orange` scale was added to
+`tokens/primitives/color.json`). The build regenerates the CSS and **fails if any tone drops below
+WCAG AA in any shape or theme**, so a rebrand cannot ship unreadable buttons.
+
+<Source
+  language="json"
+  code={`{
+  "button": {
+    "primary": { "$value": "{color.orange.700}" },
+    "primary-hover": { "$value": "{color.orange.800}" },
+    "primary-fg": { "$value": "{color.white}" },
+    "primary-text": { "$value": "{color.orange.800}" }
+  }
+}`}
+/>
+
+Reference semantic tokens instead of palette steps when the color should differ per theme.
+
+### In your application's CSS
+
+<Canvas of={Examples.ChangeColor} />
+
+<Source
+  language="css"
+  code={`/* Every primary button in the light theme */
+:root {
+  --sui-button-primary: #c2410c;
+  --sui-button-primary-hover: #9a3412;
+  --sui-button-primary-fg: #ffffff;
+  --sui-button-primary-text: #9a3412;
+}
+
+/_ Lighter values for the dark theme _/
+[data-sui-theme='dark'] {
+--sui-button-primary: #fb923c;
+--sui-button-primary-hover: #fdba74;
+--sui-button-primary-fg: #431407;
+--sui-button-primary-text: #fb923c;
+}
+
+/_ Or only inside one part of the page _/
+.checkout {
+--sui-button-primary: #c2410c;
+}`}
+/>
+
+CSS overrides are not covered by the build-time contrast check: verify them in Storybook, where the
+accessibility panel reports contrast issues.
+
+## Add a color
+
+Create your own `Button` once and use it everywhere instead of the kit's `Button`. The new tone works
+with every shape, and TypeScript knows about it.
+
+<Canvas of={Examples.CustomTone} />
+
+<Source
+  language="tsx"
+  code={`// app/ui/button.tsx
+import { createButton } from '@stop-ui/react';
+
+export const Button = createButton({
+  tones: {
+    success: {
+      color: 'var(--app-success)',
+      hover: 'var(--app-success-hover)',
+      fg: 'var(--app-success-fg)',
+      text: 'var(--app-success-text)', // optional, defaults to color
+    },
+  },
+});
+
+// anywhere in the app
+import { Button } from '@/ui/button';
+
+<Button tone="success">Confirm</Button>
+<Button tone="success" variant="outline">Confirm</Button>`}
+/>
+
+Use CSS variables for tone colors so each theme can define its own values. With plain hex values, the
+tone looks the same in every theme, and `createButton` warns in development if a tone falls below
+WCAG AA contrast.
+
+Prefer CSS only? Style a tone through the `data-tone` hook and the tone variables:
+
+<Source
+  language="css"
+  code={`[data-sui-button][data-tone='success'] {
+  --sui-tone: var(--app-success);
+  --sui-tone-hover: var(--app-success-hover);
+  --sui-tone-fg: var(--app-success-fg);
+  --sui-tone-text: var(--app-success-text);
+}`}
+/>
+
+## Add a shape
+
+A custom shape either **extends** a built-in one or **replaces** its shape classes. Shapes written from
+scratch read colors from the tone variables, so they still work with every tone.
+
+<Canvas of={Examples.CustomShapes} />
+
+<Source
+  language="tsx"
+  code={`export const Button = createButton({
+  variants: {
+    // a solid button with pill corners
+    pill: { extends: 'solid', className: 'rounded-full px-6' },
+    // a new shape built on the tone variables
+    link: 'h-auto p-0 bg-transparent border-transparent underline underline-offset-4 text-(--sui-tone-text)',
+  },
+});`}
+/>
+
+Class names can be your own Tailwind utilities or plain CSS classes. Kit styles live in a lower
+cascade layer than your utilities, so your classes always win.
+
+| Tone variable                              | Value                                  |
+| ------------------------------------------ | -------------------------------------- |
+| `--sui-tone`                               | Tone color                             |
+| `--sui-tone-hover`                         | Tone color on hover                    |
+| `--sui-tone-fg`                            | Text on the tone color                 |
+| `--sui-tone-text`                          | Tone-colored text on light backgrounds |
+| `--sui-tone-soft`, `--sui-tone-soft-hover` | Tints of the tone color                |
+| `--sui-tone-border`                        | Tone-colored border                    |
+
+## Change defaults
+
+<Source
+  language="tsx"
+  code={`export const Button = createButton({
+  defaults: { variant: 'soft', tone: 'neutral', size: 'sm' },
+});`}
+/>
+
+## Styling hooks
+
+Every button renders `data-sui-button`, `data-variant`, `data-tone`, `data-size` and, while loading,
+`data-loading`. Use them from SCSS, CSS Modules or plain CSS:
+
+<Canvas of={Examples.StylingHooks} />
+
+<Source
+  language="css"
+  code={`[data-sui-button][data-variant='solid'] {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+[data-sui-button][data-loading] {
+cursor: wait;
+}`}
+/>
+
+## One-off changes
+
+For a single button, pass `className` or `style`. Your utilities override kit styles regardless of
+import order.
+
+<Canvas of={Examples.OneOff} />

@@ -1,15 +1,9 @@
 [
   {
     "foreground": "fg",
-    "background": ["surface", "surface-subtle", "secondary"],
+    "background": ["surface", "surface-subtle"],
     "min": 7,
     "reason": "Body text targets WCAG AAA (1.4.6)."
-  },
-  {
-    "foreground": "fg",
-    "background": ["secondary-hover"],
-    "min": 4.5,
-    "reason": "Text on hovered ghost and outline buttons (WCAG 1.4.3)."
   },
   {
     "foreground": "fg-muted",
@@ -21,19 +15,25 @@
     "foreground": "primary-fg",
     "background": ["primary", "primary-hover"],
     "min": 4.5,
-    "reason": "Text on primary buttons (WCAG 1.4.3)."
+    "reason": "Text on primary (WCAG 1.4.3)."
   },
   {
-    "foreground": "secondary-fg",
-    "background": ["secondary", "secondary-hover"],
+    "foreground": "neutral-fg",
+    "background": ["neutral", "neutral-hover"],
     "min": 4.5,
-    "reason": "Text on secondary buttons (WCAG 1.4.3)."
+    "reason": "Text on neutral (WCAG 1.4.3)."
   },
   {
     "foreground": "danger-fg",
     "background": ["danger", "danger-hover"],
     "min": 4.5,
-    "reason": "Text on danger buttons (WCAG 1.4.3)."
+    "reason": "Text on danger (WCAG 1.4.3)."
+  },
+  {
+    "foreground": "danger-text",
+    "background": ["surface", "surface-subtle"],
+    "min": 4.5,
+    "reason": "Danger text on surfaces (WCAG 1.4.3)."
   },
   {
     "foreground": "border-strong",

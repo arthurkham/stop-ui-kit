@@ -1,0 +1,76 @@
+/* Example application CSS used by the customization docs. */
+
+/* Recipe: change the color of primary buttons, per theme. */
+.demo-orange {
+  --sui-button-primary: #c2410c;
+  --sui-button-primary-hover: #9a3412;
+  --sui-button-primary-fg: #ffffff;
+  --sui-button-primary-text: #9a3412;
+}
+
+[data-sui-theme='dark'] .demo-orange {
+  --sui-button-primary: #fb923c;
+  --sui-button-primary-hover: #fdba74;
+  --sui-button-primary-fg: #431407;
+  --sui-button-primary-text: #fb923c;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-sui-theme='system'] .demo-orange {
+    --sui-button-primary: #fb923c;
+    --sui-button-primary-hover: #fdba74;
+    --sui-button-primary-fg: #431407;
+    --sui-button-primary-text: #fb923c;
+  }
+}
+
+/* Recipe: theme-aware colors for a custom tone. */
+:root,
+[data-sui-theme='light'] {
+  --demo-success: #15803d;
+  --demo-success-hover: #166534;
+  --demo-success-fg: #ffffff;
+  --demo-success-text: #166534;
+}
+
+[data-sui-theme='dark'] {
+  --demo-success: #4ade80;
+  --demo-success-hover: #86efac;
+  --demo-success-fg: #052e16;
+  --demo-success-text: #4ade80;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-sui-theme='system'] {
+    --demo-success: #4ade80;
+    --demo-success-hover: #86efac;
+    --demo-success-fg: #052e16;
+    --demo-success-text: #4ade80;
+  }
+}
+
+/* Recipe: custom shapes. */
+.demo-pill {
+  border-radius: 9999px;
+  padding-inline: 1.5rem;
+}
+
+.demo-link {
+  height: auto;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  color: var(--sui-tone-text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Recipe: styling hooks. */
+.demo-hooks [data-sui-button][data-variant='solid'] {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.demo-hooks [data-sui-button][data-loading] {
+  cursor: wait;
+}

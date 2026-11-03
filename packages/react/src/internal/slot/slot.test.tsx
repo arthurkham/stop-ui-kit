@@ -14,8 +14,7 @@ describe('Slot', () => {
       </Slot>,
     );
     const link = screen.getByRole('link');
-    expect(link).toHaveClass('from-slot', 'from-child', 'sui:px-4');
-    expect(link).not.toHaveClass('sui:px-2');
+    expect(link).toHaveClass('from-slot', 'from-child', 'sui:px-2', 'sui:px-4');
     expect(link).toHaveAttribute('data-state', 'open');
     expect(link).toHaveAttribute('title', 'child');
   });

@@ -3,20 +3,10 @@ import { cn } from './cn.js';
 
 describe('cn', () => {
   it('joins truthy class names', () => {
-    expect(cn('sui:flex', false, null, undefined, 'sui:gap-2')).toBe('sui:flex sui:gap-2');
+    expect(cn('a', false, null, undefined, 'b', { c: true, d: false })).toBe('a b c');
   });
 
-  it('lets later prefixed utilities override earlier ones', () => {
-    expect(cn('sui:px-2 sui:py-1', 'sui:px-4')).toBe('sui:py-1 sui:px-4');
-  });
-
-  it('resolves conflicts within variants independently', () => {
-    expect(cn('sui:hover:bg-red-500', 'sui:bg-blue-500', 'sui:hover:bg-green-500')).toBe(
-      'sui:bg-blue-500 sui:hover:bg-green-500',
-    );
-  });
-
-  it('keeps unprefixed consumer classes untouched', () => {
-    expect(cn('sui:px-2', 'my-custom-class')).toBe('sui:px-2 my-custom-class');
+  it('keeps every class: overrides are resolved by cascade layers, not by removal', () => {
+    expect(cn('sui:px-4', 'px-8')).toBe('sui:px-4 px-8');
   });
 });
