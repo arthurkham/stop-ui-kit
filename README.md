@@ -141,10 +141,13 @@ Safari 16.4+, Chrome 111+, Firefox 128+.
 pnpm install
 pnpm dev          # Storybook on http://localhost:6006
 pnpm test         # unit, keyboard and axe tests
-pnpm check        # typecheck, lint, format, tests, build and package validation
+pnpm test:browser # stories in real browsers, light and dark themes
+pnpm check        # everything CI checks except browser and visual tests
 pnpm build        # build all packages
 pnpm changeset    # describe a change for the next release
 ```
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) and [docs/quality.md](./docs/quality.md).
 
 The repository is a pnpm workspace: published packages live in `packages/`, Storybook in
 `apps/storybook`, and shared test helpers in `tooling/`.

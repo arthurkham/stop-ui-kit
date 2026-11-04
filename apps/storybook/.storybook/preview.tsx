@@ -1,4 +1,6 @@
 import type { Decorator, Preview } from '@storybook/react-vite';
+// The layer order comes first, as an application with legacy CSS would declare it.
+import './layers.css';
 import './preview.css';
 
 const themes = ['light', 'dark', 'system'] as const;
@@ -55,8 +57,15 @@ const preview: Preview = {
       },
     },
     a11y: {
-      // Fail the a11y panel on violations instead of only reporting them.
+      // Fail the a11y panel and browser tests on violations instead of only reporting them.
       test: 'error',
+    },
+    // Visual tests capture every story in both themes.
+    chromatic: {
+      modes: {
+        light: { theme: 'light' },
+        dark: { theme: 'dark' },
+      },
     },
   },
 };

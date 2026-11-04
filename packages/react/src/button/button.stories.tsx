@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 import { useState, type CSSProperties } from 'react';
 import { Button } from './button.js';
 
@@ -123,6 +124,15 @@ export const VariantsAndTones: Story = {
 };
 
 export const Sizes: Story = {
+  // Also guards the test setup itself: fails if the kit stylesheet is not applied, which would
+  // otherwise let accessibility checks pass against unstyled browser defaults.
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const heights = ['Small', 'Medium', 'Large'].map(
+      (name) => getComputedStyle(canvas.getByRole('button', { name })).height,
+    );
+    await expect(heights).toEqual(['32px', '36px', '40px']);
+  },
   parameters: source(`
 <Button size="sm">Small</Button>
 <Button size="md">Medium</Button>

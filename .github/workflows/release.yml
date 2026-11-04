@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency: release
+
+permissions: {}
+
+jobs:
+  release:
+    name: Version or publish
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+      pull-requests: write
+      # npm trusted publishing (OIDC): no long-lived npm token, provenance is generated automatically.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      # Trusted publishing requires npm 11.5.1 or later.
+      - run: npm install --global npm@latest
+      - run: pnpm install --frozen-lockfile
+      - uses: changesets/action@v2
+        with:
+          version: pnpm version-packages
+          # Publishing stays off until trusted publishing is configured for every package on npm
+          # (repository variable NPM_TRUSTED_PUBLISHING = true). Until then this only opens the
+          # release pull request.
+          publish: ${{ vars.NPM_TRUSTED_PUBLISHING == 'true' && 'pnpm release' || '' }}
+          title: 'chore: release packages'
+          commit: 'chore: release packages'
+        env:
+          # A fine-grained token lets the release pull request trigger CI; pull requests opened
+          # with GITHUB_TOKEN do not run workflows.
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
