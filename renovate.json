@@ -74,6 +74,11 @@
       "description": "The compatibility story targets Bootstrap 3 specifically",
       "matchPackageNames": ["bootstrap"],
       "allowedVersions": "<4"
+    },
+    {
+      "description": "The Changesets action major version must match the Changesets CLI major version",
+      "matchPackageNames": ["@changesets/**", "changesets/action"],
+      "groupName": "Changesets"
     }
   ]
 }

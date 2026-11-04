@@ -30,7 +30,9 @@ jobs:
       # Trusted publishing requires npm 11.5.1 or later.
       - run: npm install --global npm@latest
       - run: pnpm install --frozen-lockfile
-      - uses: changesets/action@v2
+      # v1 matches Changesets CLI v2 and supports npm trusted publishing (OIDC) when no NPM_TOKEN
+      # is set. Upgrade together with @changesets/cli v3 (grouped in renovate.json).
+      - uses: changesets/action@v1
         with:
           version: pnpm version-packages
           # Publishing stays off until trusted publishing is configured for every package on npm
