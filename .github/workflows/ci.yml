@@ -80,7 +80,9 @@ jobs:
 
   changeset:
     name: Changeset
-    if: github.event_name == 'pull_request'
+    # The release pull request consumes changesets (removes them and bumps versions), so the
+    # check does not apply to it. A skipped job still satisfies the required status check.
+    if: github.event_name == 'pull_request' && github.head_ref != 'changeset-release/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
