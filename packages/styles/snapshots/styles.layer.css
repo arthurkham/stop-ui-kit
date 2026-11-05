@@ -449,8 +449,8 @@
     text-decoration-line: none;
   }
 
-  .sui\:transition-colors {
-    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  .sui\:transition-\[color\,background-color\,border-color\,text-decoration-color\] {
+    transition-property: color, background-color, border-color, text-decoration-color;
     transition-timing-function: var(--tw-ease, var(--sui-easing-standard));
     transition-duration: var(--tw-duration, var(--sui-duration-fast));
   }

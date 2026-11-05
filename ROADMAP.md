@@ -21,7 +21,8 @@
 - [x] Isolated default stylesheet for existing sites (Bootstrap 3, global CSS) and a layered one
 - [ ] Shape and size component tokens (radius, padding, height, font weight), so shape changes
       rarely need `!important`
-- [ ] Token CLI for applications: build overrides from your own DTCG files, with contrast checks
+- [ ] `@stop-ui/config`: `stop-ui.config.ts` (or your own DTCG files) generates styles and types,
+      with contrast checks, outdated-key warnings and `npx stop-ui migrate`
 - [ ] Portal that carries the active theme into portaled content
 - [ ] Focus management on `tabbable`, positioning on `@floating-ui/dom`
 - [ ] `useControllableState` for controlled and uncontrolled state
@@ -50,6 +51,10 @@
 - [x] Storybook stories as accessibility tests in Chromium, Firefox and WebKit, light and dark
 - [x] CSS invariants, CSS snapshot, browser support lint, bundle size budgets
 - [x] Consumer test: packed packages in a fresh application next to Tailwind and Bootstrap 3
+- [x] Public API snapshot: types, tokens, component tokens, styling hooks and themes
+- [ ] Change report in every pull request and release: which components changed, and how
+- [ ] `@stop-ui/testing`: `snapshotKit(page)` for Playwright, to see what an update changed in your
+      own product
 - [x] Visual tests with Chromatic
 - [ ] Storybook published to GitHub Pages
 - [x] Release workflow with Changesets and npm trusted publishing

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 import { useState, type CSSProperties } from 'react';
 import { Button } from './button.js';
 
@@ -198,6 +198,21 @@ async function save() {
 export const Disabled: Story = {
   args: {
     disabled: true,
+  },
+};
+
+export const KeyboardFocus: Story = {
+  name: 'Keyboard focus',
+  args: { children: 'Save' },
+  // The focus indicator appears at full contrast at once instead of fading in from the text color.
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole('button', { name: 'Save' });
+    await userEvent.tab();
+    await expect(button).toHaveFocus();
+    const initial = getComputedStyle(button).outlineColor;
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    await expect(getComputedStyle(button).outlineColor).toBe(initial);
+    await expect(getComputedStyle(button).outlineStyle).toBe('solid');
   },
 };
 

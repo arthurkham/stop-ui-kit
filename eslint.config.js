@@ -11,6 +11,8 @@ export default defineConfig([
     '**/dist',
     '**/storybook-static',
     '**/coverage',
+    // Generated public API snapshot (pnpm api:update).
+    'api',
     // An application fixture, type-checked by the consumer test against the packed packages.
     'tests/consumer/app',
   ]),

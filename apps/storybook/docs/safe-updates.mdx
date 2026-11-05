@@ -1,0 +1,91 @@
+import { Meta, Source } from '@storybook/addon-docs/blocks';
+
+<Meta title="Customization/Safe updates" />
+
+# Safe updates
+
+Customizing a kit only pays off if updates do not undo it. You can update Stop UI and get new
+components without redoing your customization: what you customize with is a public contract with a
+versioning policy, and automated checks enforce it on every change.
+
+## The public contract
+
+| You customize with             | Examples                                                                      |
+| ------------------------------ | ----------------------------------------------------------------------------- |
+| Components, props and types    | `<Button variant tone size>`, `Field`, `InputProps`                           |
+| Factories                      | `createButton({ tones, variants, defaults })`                                 |
+| Tokens                         | `--sui-primary`, `--sui-radius-md`, `--sui-rem`                               |
+| Component tokens               | `--sui-button-primary`, `--sui-input-border`                                  |
+| Tone variables (custom shapes) | `--sui-tone`, `--sui-tone-text`, `--sui-tone-soft`                            |
+| Styling hooks                  | `data-sui-button`, `data-variant`, `data-size`, `data-invalid` where rendered |
+| Themes and stylesheets         | `data-sui-theme`, `styles.css`, `styles.layer.css`                            |
+
+Not part of the contract, and free to change in any release:
+
+- kit class names (`sui:*`) and the classes recipes return;
+- variables with a double dash (`--sui-input--bg`) or the `--tw-` prefix;
+- elements inside a component that have no styling hook.
+
+Default values such as sizes, spacing and colors are design rather than contract. They can change
+in minor versions and are always listed in the changelog.
+
+## New components follow your customization
+
+Every component reads its component tokens with a fallback to the shared tokens. A component added
+in a later version picks up your brand color, radius, scale and themes without any change on your
+side.
+
+## Versioning
+
+- Semantic versioning. All packages share one version, so they are always updated together.
+- Before 1.0, breaking changes can happen in minor versions. They are marked **Breaking** in the
+  changelog, with migration steps.
+- From 1.0, breaking changes happen only in major versions. Renamed tokens, props and styling hooks
+  keep working until the next major version and warn in development.
+
+## Enforced, not just promised
+
+- **Public API snapshot.** Exported types, tokens, component tokens, styling hooks and themes are
+  recorded in the repository. Any change fails CI until it is reviewed and acknowledged, and a
+  removal requires a **Breaking** changelog entry.
+- **Consumer test.** Every documented way to customize the kit (tokens, component tokens,
+  `createButton`, styling hooks, application classes, both stylesheets) is checked in a real
+  application on every change.
+- **CSS snapshot and visual tests.** Every change to the compiled CSS and to how components look is
+  reviewed before it ships.
+
+## How to update
+
+1. Read the changelog entries since your version. Look for **Breaking** and for changed defaults.
+2. Update all Stop UI packages together.
+3. Run your type check: removed or renamed props and `createButton` options show up as TypeScript
+   errors.
+4. Search your stylesheets for kit internals (`sui\:` class names, `--sui-…--` variables) and
+   replace them with tokens or styling hooks, which the contract covers.
+5. Check your main pages, focusing on the components the changelog lists.
+
+<Source language="bash" code={`pnpm up "@stop-ui/*" --latest
+pnpm tsc --noEmit`} />
+
+Keep customization in one place, tokens in one stylesheet and project components such as your own
+`Button` in `app/ui/`, so an update touches a single file at most.
+
+<Source
+  language="css"
+  code={`/* app/styles/stop-ui.css: the only place with kit customization */
+:root {
+  --sui-primary: #6d28d9;
+  --sui-primary-hover: #5b21b6;
+  --sui-button-primary-text: #5b21b6;
+  --sui-input-border: #6b7280;
+}`}
+/>
+
+## Coming next
+
+- **Config file.** `stop-ui.config.ts` generates your styles and types from one typed file, checks
+  contrast, reports outdated keys after an update and migrates them (`npx stop-ui migrate`).
+- **Change report.** Every release lists which components changed, which properties and in which
+  states.
+- **`@stop-ui/testing`.** `snapshotKit(page)` for Playwright records every kit component on your own
+  pages, with your customization, and shows exactly what an update changed in your product.

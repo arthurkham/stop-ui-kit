@@ -22,8 +22,10 @@
     "test:consumer": "node tests/consumer/run.js",
     "check:css": "node tooling/check-css.js && stylelint packages/styles/dist/styles.css packages/styles/dist/styles.layer.css",
     "css:update": "pnpm build && node tooling/check-css.js --update",
+    "check:api": "node tooling/check-api.js",
+    "api:update": "pnpm build && node tooling/check-api.js --update",
     "size": "size-limit",
-    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build && pnpm lint:package && pnpm check:css && pnpm size",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build && pnpm lint:package && pnpm check:css && pnpm check:api && pnpm size",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish"

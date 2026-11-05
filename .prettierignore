@@ -9,3 +9,6 @@ pnpm-lock.yaml
 
 # Prettier reformats code inside MDX template literals as Markdown.
 *.mdx
+
+# Generated public API snapshot (pnpm api:update).
+api

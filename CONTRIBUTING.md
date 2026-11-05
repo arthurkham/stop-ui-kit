@@ -33,6 +33,10 @@ pnpm exec playwright install      # once, for browser tests
   themes and rebranding work without overrides.
 - **Styling hooks.** Render `data-sui-<component>` and the public state (`data-size`, `data-variant`,
   …) so the component can be styled from any CSS setup.
+- **The public contract is a promise.** Tokens, component tokens, props, factory options and styling
+  hooks are what applications build on. Do not remove or rename them without a **Breaking**
+  changeset and migration steps; keep the old name working where possible. Internals (kit class
+  names, `--sui-x--y` variables, unhooked elements) can change freely.
 
 ## Useful commands
 
@@ -43,6 +47,7 @@ pnpm exec playwright install      # once, for browser tests
 | `BROWSERS=chromium THEMES=light pnpm test:browser` | A faster subset                                          |
 | `pnpm test:consumer`                               | Packed packages in a fresh app (run `pnpm build` first)  |
 | `pnpm css:update`                                  | Accept an intended change to the compiled CSS            |
+| `pnpm api:update`                                  | Accept an intended change to the public API              |
 | `pnpm size`                                        | Bundle size budgets                                      |
 | `pnpm tokens`                                      | Rebuild design tokens                                    |
 
