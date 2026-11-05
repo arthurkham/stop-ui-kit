@@ -1,0 +1,47 @@
+{
+  "input": {
+    "$type": "color",
+    "$description": "Text fields, text areas, selects and input groups. Each token is optional at runtime: override it to restyle form fields without touching other components.",
+    "$extensions": {
+      "dev.stop-ui": {
+        "kind": "properties",
+        "hosts": ["input", "textarea", "select", "input-group"],
+        "contrast": [
+          {
+            "foreground": "placeholder",
+            "background": "bg",
+            "min": 4.5,
+            "reason": "Placeholder text stays readable (WCAG 1.4.3)."
+          },
+          {
+            "foreground": "border",
+            "background": "bg",
+            "min": 3,
+            "reason": "The field boundary identifies the control (WCAG 1.4.11)."
+          },
+          {
+            "foreground": "border-hover",
+            "background": "bg",
+            "min": 3,
+            "reason": "The field boundary identifies the control (WCAG 1.4.11)."
+          },
+          {
+            "foreground": "border-invalid",
+            "background": "bg",
+            "min": 3,
+            "reason": "The invalid state is visible (WCAG 1.4.11)."
+          }
+        ]
+      }
+    },
+    "bg": { "$value": "{surface}", "$description": "Field background." },
+    "border": { "$value": "{border-strong}", "$description": "Field border." },
+    "border-hover": { "$value": "{fg-muted}", "$description": "Field border on hover." },
+    "border-invalid": { "$value": "{danger}", "$description": "Field border when invalid." },
+    "placeholder": { "$value": "{fg-muted}", "$description": "Placeholder text." },
+    "bg-readonly": {
+      "$value": "{surface-subtle}",
+      "$description": "Background of read-only fields."
+    }
+  }
+}

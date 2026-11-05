@@ -26,10 +26,11 @@
 ### Components
 
 - [x] Button (solid, soft, outline, ghost × primary, neutral, danger)
-- [ ] Label
-- [ ] Input
-- [ ] Textarea
-- [ ] Checkbox
+- [x] Field (label, description and error wiring), Label
+- [x] Input, InputGroup
+- [x] Textarea (with auto resize)
+- [x] NativeSelect
+- [ ] Checkbox, CheckboxGroup
 - [ ] Switch
 - [ ] RadioGroup
 - [ ] Dialog

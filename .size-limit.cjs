@@ -35,6 +35,15 @@ module.exports = [
     limit: '3 kB',
   },
   {
+    name: '@stop-ui/react: form fields',
+    path: 'packages/react/dist/index.js',
+    import:
+      '{ Field, FieldDescription, FieldError, Label, Input, InputGroup, InputGroupAddon, NativeSelect, Textarea }',
+    ignore,
+    modifyRolldownConfig: stubCss,
+    limit: '3.5 kB',
+  },
+  {
     name: '@stop-ui/react: styles.css',
     path: 'packages/react/dist/styles.css',
     rolldown: false,

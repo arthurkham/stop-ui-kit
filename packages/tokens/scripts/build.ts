@@ -53,6 +53,23 @@ export interface ComponentMix {
   border: number;
 }
 
+export interface ComponentContrastRule {
+  foreground: string;
+  background: string;
+  min: number;
+  reason: string;
+}
+
+/**
+ * How a component group in `tokens/components/*.json` is compiled, from
+ * `$extensions["dev.stop-ui"]`:
+ * - `tones`: color tones (e.g. button) bound to `--sui-tone*` per `[data-tone]`.
+ * - `properties`: named tokens (e.g. input) bound to `--sui-<component>--<name>` on host elements.
+ */
+export type ComponentConfig =
+  | { kind: 'tones'; mix: ComponentMix }
+  | { kind: 'properties'; hosts: string[]; contrast: ComponentContrastRule[] };
+
 interface DimensionValue {
   value: number;
   unit: string;
@@ -256,18 +273,31 @@ export function componentTones(theme: ResolvedTheme, component: string): string[
     .filter((name) => !/-(hover|fg|text)$/.test(name));
 }
 
-export function readComponentMix(component: string): ComponentMix {
+export function readComponentConfig(component: string): ComponentConfig {
   const source = readJson(join(tokensDir, 'components', `${component}.json`)) as Record<
     string,
-    { $extensions?: { 'dev.stop-ui'?: { mix?: ComponentMix } } }
+    {
+      $extensions?: {
+        'dev.stop-ui'?: {
+          kind?: string;
+          mix?: ComponentMix;
+          hosts?: string[];
+          contrast?: ComponentContrastRule[];
+        };
+      };
+    }
   >;
-  const mix = source[component]?.$extensions?.['dev.stop-ui']?.mix;
-  if (!mix) {
-    throw new Error(
-      `tokens/components/${component}.json must define $extensions["dev.stop-ui"].mix.`,
-    );
+  const config = source[component]?.$extensions?.['dev.stop-ui'];
+  if (config?.kind === 'properties' && config.hosts?.length) {
+    return { kind: 'properties', hosts: config.hosts, contrast: config.contrast ?? [] };
   }
-  return mix;
+  if (config?.mix) {
+    return { kind: 'tones', mix: config.mix };
+  }
+  throw new Error(
+    `tokens/components/${component}.json must define $extensions["dev.stop-ui"] with either ` +
+      '"mix" (tones) or "kind": "properties" and "hosts".',
+  );
 }
 
 /**
@@ -277,8 +307,12 @@ export function readComponentMix(component: string): ComponentMix {
 export function checkComponentContrast(
   themes: ResolvedTheme[],
   component: string,
-  mix: ComponentMix,
+  config: ComponentConfig,
 ): ContrastResult[] {
+  if (config.kind === 'properties') {
+    return checkComponentProperties(themes, component, config.contrast);
+  }
+  const { mix } = config;
   return themes.flatMap((theme) => {
     const colors = new Map(
       [...theme.semantic, ...theme.component].map((token) => [
@@ -321,6 +355,40 @@ export function checkComponentContrast(
           passed: ratio >= 4.5,
         };
       });
+    });
+  });
+}
+
+/** Checks the contrast rules declared by a `properties` component, e.g. placeholder on input background. */
+function checkComponentProperties(
+  themes: ResolvedTheme[],
+  component: string,
+  rules: ComponentContrastRule[],
+): ContrastResult[] {
+  return themes.flatMap((theme) => {
+    const colors = new Map(
+      [...theme.semantic, ...theme.component].map((token) => [
+        token.path.join('.'),
+        toHex(token.$value as ColorValue),
+      ]),
+    );
+    // Names are local to the component first (`placeholder` → `input.placeholder`), then semantic.
+    const get = (name: string): string => {
+      const color = colors.get(`${component}.${name}`) ?? colors.get(name);
+      if (!color) throw new Error(`Unknown token "${name}" in ${component} contrast rules.`);
+      return color;
+    };
+    return rules.map((rule) => {
+      const ratio = contrastRatio(get(rule.foreground), get(rule.background));
+      return {
+        theme: theme.id,
+        foreground: `${component}.${rule.foreground}`,
+        background: `${component}.${rule.background}`,
+        ratio,
+        min: rule.min,
+        reason: rule.reason,
+        passed: ratio >= rule.min,
+      };
     });
   });
 }
@@ -397,7 +465,23 @@ export function formatComponentsCss(theme: ResolvedTheme): string {
   const byPath = new Map(theme.component.map((token) => [token.path.join('.'), token]));
 
   const blocks = components.map((component) => {
-    const mix = readComponentMix(component);
+    const config = readComponentConfig(component);
+
+    if (config.kind === 'properties') {
+      const selectors = config.hosts.map((host) => `  [data-sui-${host}]`).join(',\n');
+      const lines = theme.component
+        .filter((token) => token.path[0] === component)
+        .map((token) => {
+          const name = token.path.slice(1).join('-');
+          return `    --sui-${component}--${name}: var(--sui-${component}-${name}, ${cssValue(token)});`;
+        });
+      return `  /* ${component}: optional tokens, resolved on every element that uses them. */
+${selectors} {
+${lines.join('\n')}
+  }`;
+    }
+
+    const { mix } = config;
     const host = `[data-sui-${component}]`;
     const tones = componentTones(theme, component).map((tone) => {
       const lines = TONE_ROLES.map((role) => {
@@ -422,9 +506,11 @@ ${tones.join('\n\n')}`;
 
   return `${HEADER}
 /*
- * Component tokens are optional overrides: each tone binding falls back to a semantic token, so
- * \`:root { --sui-button-primary: #ea580c; }\` restyles every primary button in every theme.
- * A custom tone only needs \`--sui-tone\`, \`--sui-tone-hover\`, \`--sui-tone-fg\` and \`--sui-tone-text\`.
+ * Component tokens are optional overrides: each binding falls back to a semantic token, so
+ * \`:root { --sui-button-primary: #ea580c; }\` or \`:root { --sui-input-border: #888; }\` restyles
+ * a component in every theme without declaring tokens that would freeze theme values.
+ * A custom button tone only needs \`--sui-tone\`, \`--sui-tone-hover\`, \`--sui-tone-fg\` and
+ * \`--sui-tone-text\`.
  */
 @layer components {
 ${blocks.join('\n\n')}
@@ -583,7 +669,7 @@ export async function buildTokens(outDir = join(packageRoot, 'dist')): Promise<C
   const results = [
     ...checkContrast(themes, readJson(join(packageRoot, 'contrast.json')) as ContrastRule[]),
     ...components.flatMap((component) =>
-      checkComponentContrast(themes, component, readComponentMix(component)),
+      checkComponentContrast(themes, component, readComponentConfig(component)),
     ),
   ];
   const failures = results.filter((result) => !result.passed);

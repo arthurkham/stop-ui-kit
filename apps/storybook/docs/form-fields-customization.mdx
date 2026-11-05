@@ -1,0 +1,109 @@
+import { Canvas, Meta, Source } from '@storybook/addon-docs/blocks';
+import * as Examples from '../stories/customization/form-fields.stories';
+
+<Meta title="Customization/Form fields" />
+
+# Customizing form fields
+
+`Input`, `Textarea`, `NativeSelect` and `InputGroup` share one look, so a change applies to every
+text field at once.
+
+| You want to…                                             | Use                           | Where                          |
+| -------------------------------------------------------- | ----------------------------- | ------------------------------ |
+| Change field colors everywhere, with contrast checked    | Component tokens in DTCG JSON | `tokens/components/input.json` |
+| Change field colors in your application or in one place  | Component tokens in CSS       | Your stylesheet                |
+| Change shape or spacing from any CSS setup               | Styling hooks (`data-*`)      | Your stylesheet                |
+| Adjust one field                                         | `className` / `style`         | The call site                  |
+| Change colors shared with other components (focus, text) | Semantic tokens               | `tokens/themes/*.json`         |
+
+## Component tokens
+
+| Token                        | Used for                       | Default                |
+| ---------------------------- | ------------------------------ | ---------------------- |
+| `--sui-input-bg`             | Field background               | `--sui-surface`        |
+| `--sui-input-border`         | Field border                   | `--sui-border-strong`  |
+| `--sui-input-border-hover`   | Field border on hover          | `--sui-fg-muted`       |
+| `--sui-input-border-invalid` | Field border when invalid      | `--sui-danger`         |
+| `--sui-input-placeholder`    | Placeholder text               | `--sui-fg-muted`       |
+| `--sui-input-bg-readonly`    | Background of read-only fields | `--sui-surface-subtle` |
+
+Every token is optional. Until you set one, it follows the semantic token in the active theme, so
+fields stay correct in light, dark and nested themes.
+
+### In the design tokens (recommended)
+
+Edit `tokens/components/input.json`. The build **fails if the placeholder drops below 4.5:1 or a
+border below 3:1** against the field background in any theme (WCAG 1.4.3 and 1.4.11).
+
+<Source
+  language="json"
+  code={`{
+  "input": {
+    "bg": { "$value": "{surface-subtle}" },
+    "border-hover": { "$value": "{primary}" }
+  }
+}`}
+/>
+
+For example, setting `border` to `{border}`, the light decorative border color, fails the build: it
+does not reach 3:1 against the field background.
+
+### In your application's CSS
+
+<Canvas of={Examples.ComponentTokens} />
+
+<Source
+  language="css"
+  code={`/* Every field: a brand-colored border on hover */
+:root {
+  --sui-input-border-hover: var(--sui-primary);
+}
+
+/* Filled fields inside one part of the page */
+.settings {
+  --sui-input-bg: var(--sui-surface-subtle);
+}`}
+/>
+
+CSS overrides are not covered by the build-time contrast check: verify them in Storybook, where the
+accessibility panel reports contrast issues. Use semantic tokens (`var(--sui-primary)`) rather than
+fixed colors so each theme keeps its own values.
+
+## Styling hooks
+
+| Hook                                | Element                          |
+| ----------------------------------- | -------------------------------- |
+| `data-sui-field`                    | `Field` wrapper                  |
+| `data-sui-label`                    | `Label`                          |
+| `data-sui-input`, `data-size`       | `Input`                          |
+| `data-sui-textarea`, `data-size`    | `Textarea`                       |
+| `data-sui-select`, `data-size`      | The `<select>` of `NativeSelect` |
+| `data-sui-select-wrapper`           | The wrapper with the chevron     |
+| `data-sui-input-group`, `data-size` | `InputGroup`                     |
+| `data-sui-input-group-addon`        | `InputGroupAddon`                |
+| `data-sui-field-description`        | `FieldDescription`               |
+| `data-sui-field-error`              | `FieldError`                     |
+
+States use native selectors: `:disabled`, `[readonly]`, `:focus-visible`, `[aria-invalid='true']`.
+
+<Canvas of={Examples.StylingHooks} />
+
+<Source
+  language="css"
+  code={`.profile [data-sui-input],
+.profile [data-sui-select] {
+  border-width: 0 0 1px;
+  border-radius: 0;
+  padding-inline: 0;
+}`}
+/>
+
+Use logical properties (`padding-inline`, `margin-inline-start`, `inset-inline-end`) so your styles
+also work in right-to-left languages.
+
+## One-off changes
+
+For a single field, pass `className` or `style`. Kit styles live in a lower cascade layer than your
+utilities, so your classes always win.
+
+<Source language="tsx" code={`<Input className="font-mono" aria-label="API key" readOnly value={key} />`} />

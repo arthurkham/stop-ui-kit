@@ -53,11 +53,11 @@ palette.green['950']; // '#0b2f1d'
 
 ## Token tiers
 
-| Tier       | Example                                      | Purpose                                                       |
-| ---------- | -------------------------------------------- | ------------------------------------------------------------- |
-| Primitives | `--sui-green-950`, `--sui-radius-md`         | Raw palette and scale.                                        |
-| Semantic   | `--sui-primary`, `--sui-surface`, `--sui-fg` | Roles used by components; differ per theme.                   |
-| Component  | `--sui-button-primary-bg`                    | Per-component overrides (coming with the Button color model). |
+| Tier       | Example                                      | Purpose                                              |
+| ---------- | -------------------------------------------- | ---------------------------------------------------- |
+| Primitives | `--sui-green-950`, `--sui-radius-md`         | Raw palette and scale.                               |
+| Semantic   | `--sui-primary`, `--sui-surface`, `--sui-fg` | Roles used by components; differ per theme.          |
+| Component  | `--sui-button-primary`, `--sui-input-border` | Per-component overrides; default to semantic tokens. |
 
 Customize at the highest tier that fits: override a semantic token to change every component, or a
 component token to change one.
@@ -77,6 +77,7 @@ tokens/
 ├── themes/light.json       semantic tokens referencing primitives
 ├── themes/dark.json
 ├── components/button.json  button tones (color, hover, fg, text) and derived tint amounts
+├── components/input.json   form field colors (background, borders, placeholder) and their contrast rules
 ├── $themes.json            which token sets make up each theme
 └── $metadata.json          token set order
 contrast.json               required contrast for each foreground/background pair
@@ -86,7 +87,7 @@ contrast.json               required contrast for each foreground/background pai
 2. Run `pnpm tokens` from the repository root (`pnpm dev` rebuilds automatically on change).
 3. The build fails with a clear message if any pair in `contrast.json` drops below its minimum, or
    if any component tone is unreadable in any shape (text on the solid color, on tints and on the
-   surface):
+   surface), or if a component's own contrast rules fail (for example a form field border below 3:1):
 
 ```
 Contrast check failed:

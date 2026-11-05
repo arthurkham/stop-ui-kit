@@ -102,6 +102,20 @@ describe('buildTokens', () => {
     expect(preset).not.toMatch(/--color-primary:/);
   });
 
+  it('binds optional component tokens with semantic fallbacks', () => {
+    const css = read('components.css');
+    expect(css).toContain('--sui-tone: var(--sui-button-primary, var(--sui-primary));');
+    expect(css).toContain(
+      '--sui-input--border: var(--sui-input-border, var(--sui-border-strong));',
+    );
+    expect(css).toMatch(/\[data-sui-input\],\n {2}\[data-sui-textarea\]/);
+  });
+
+  it('checks component contrast rules in every theme', () => {
+    const placeholder = results.filter((result) => result.foreground === 'input.placeholder');
+    expect(placeholder.map((result) => result.theme).sort()).toEqual(['dark', 'light']);
+  });
+
   it('exports typed references', () => {
     expect(read('index.js')).toContain('"primary": "var(--sui-primary)"');
     expect(read('index.d.ts')).toContain('export type SemanticColor');
