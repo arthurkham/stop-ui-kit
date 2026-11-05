@@ -1,6 +1,6 @@
 {
   "name": "@stop-ui/tokens",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Stop UI design tokens: W3C DTCG sources compiled to CSS custom properties, a Tailwind preset and typed JavaScript.",
   "license": "MIT",
   "author": "Artur Khomenko",
