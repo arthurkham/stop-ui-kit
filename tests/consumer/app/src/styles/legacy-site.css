@@ -1,0 +1,39 @@
+/* Typical global CSS of an existing site: element selectors, IDs, contexts. */
+label {
+  font-weight: bold;
+  color: rgb(120, 0, 0);
+  text-transform: uppercase;
+}
+
+a,
+a:hover {
+  color: rgb(255, 0, 0);
+  text-decoration: underline;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+  border-radius: 0;
+}
+
+#root input,
+#root select,
+#root textarea {
+  border: 3px solid rgb(255, 0, 255);
+  font-size: 18px;
+  padding: 10px;
+}
+
+#root .form-group label,
+#root p {
+  margin: 0 0 20px;
+  color: rgb(0, 128, 0);
+}
+
+[type='email'] {
+  background-color: rgb(255, 255, 0);
+}

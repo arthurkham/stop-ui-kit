@@ -1,0 +1,4 @@
+/* Bootstrap 3 sets `html { font-size: 10px }`. Only the kit reads this variable. */
+:root {
+  --sui-rem: 16px;
+}

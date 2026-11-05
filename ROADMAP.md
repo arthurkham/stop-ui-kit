@@ -18,6 +18,10 @@
 
 - [x] Design tokens with light, dark and system themes
 - [x] Root scale variable (`--sui-rem`) for hosts that change the root font size
+- [x] Isolated default stylesheet for existing sites (Bootstrap 3, global CSS) and a layered one
+- [ ] Shape and size component tokens (radius, padding, height, font weight), so shape changes
+      rarely need `!important`
+- [ ] Token CLI for applications: build overrides from your own DTCG files, with contrast checks
 - [ ] Portal that carries the active theme into portaled content
 - [ ] Focus management on `tabbable`, positioning on `@floating-ui/dom`
 - [ ] `useControllableState` for controlled and uncontrolled state
@@ -45,6 +49,7 @@
 - [x] CI: typecheck, lint, tests and package validation on React 18 and 19
 - [x] Storybook stories as accessibility tests in Chromium, Firefox and WebKit, light and dark
 - [x] CSS invariants, CSS snapshot, browser support lint, bundle size budgets
+- [x] Consumer test: packed packages in a fresh application next to Tailwind and Bootstrap 3
 - [x] Visual tests with Chromatic
 - [ ] Storybook published to GitHub Pages
 - [x] Release workflow with Changesets and npm trusted publishing

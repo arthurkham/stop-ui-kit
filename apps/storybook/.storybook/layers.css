@@ -1,6 +1,0 @@
-/*
- * Storybook plays the host application. As the README recommends for hosts with legacy CSS, the
- * cascade layer order is declared before any other stylesheet, so it never depends on when a
- * story injects its styles.
- */
-@layer legacy, theme, base, components, utilities;

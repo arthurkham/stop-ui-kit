@@ -13,7 +13,8 @@ pnpm exec playwright install      # once, for browser tests
 1. Create a branch from `main`.
 2. Make the change, with tests and stories.
 3. If a published package changes, add a changeset: `pnpm changeset`.
-4. Run `pnpm check` (and `pnpm test:browser` for UI changes).
+4. Run `pnpm check` (and `pnpm test:browser` for UI changes, `pnpm test:consumer` for changes to
+   styles, exports or packaging).
 5. Open a pull request. The title must follow [Conventional Commits](https://www.conventionalcommits.org/),
    for example `feat(button): add icon-only size`, because it becomes the commit message on `main`.
 
@@ -40,6 +41,7 @@ pnpm exec playwright install      # once, for browser tests
 | `pnpm check`                                       | Everything CI checks, except browser and visual tests    |
 | `pnpm test:browser`                                | Stories as tests in real browsers, light and dark themes |
 | `BROWSERS=chromium THEMES=light pnpm test:browser` | A faster subset                                          |
+| `pnpm test:consumer`                               | Packed packages in a fresh app (run `pnpm build` first)  |
 | `pnpm css:update`                                  | Accept an intended change to the compiled CSS            |
 | `pnpm size`                                        | Bundle size budgets                                      |
 | `pnpm tokens`                                      | Rebuild design tokens                                    |

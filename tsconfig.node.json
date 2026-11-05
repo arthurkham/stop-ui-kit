@@ -6,7 +6,7 @@
   },
   "include": [
     "vitest.config.ts",
-    "tooling/vite-library.ts",
+    "tooling/*.ts",
     "packages/*/vite.config.ts",
     "packages/*/vitest.config.ts",
     "apps/storybook/vite.config.ts"

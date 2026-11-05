@@ -3,8 +3,10 @@
  *
  * - Preflight is intentionally omitted so the kit never resets the host application's styles.
  * - Kit utilities are emitted into the `components` layer: above a host's `base` layer
- *   (e.g. Tailwind preflight), below its `utilities` layer. This lets a consumer override
- *   any style with their own utilities (`className="px-8"`) regardless of import order.
+ *   (e.g. Tailwind preflight), below its `utilities` layer. This is `styles.layer.css`, where a
+ *   consumer overrides any style with their own utilities (`className="px-8"`).
+ * - The default `styles.css` is derived from it at build time (tooling/isolate-css.ts): kit
+ *   utilities are unlayered with a specificity shield, so a host's global CSS cannot break them.
  */
 @layer theme, base, components, utilities;
 

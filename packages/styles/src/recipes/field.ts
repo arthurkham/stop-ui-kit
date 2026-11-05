@@ -3,7 +3,7 @@ export const fieldClassName = 'sui:box-border sui:flex sui:min-w-0 sui:flex-col 
 
 /** Field label. Explicit typography, because host styles such as Bootstrap's `label` are common. */
 export const labelClassName =
-  'sui:m-0 sui:[font-family:inherit] sui:text-sm sui:font-medium sui:text-fg sui:data-disabled:opacity-50';
+  'sui:m-0 sui:[font-family:inherit] sui:text-sm sui:font-medium sui:[letter-spacing:normal] sui:normal-case sui:text-fg sui:data-disabled:opacity-50';
 
 /** Visual marker for required fields; hidden from assistive technology, which announces `required`. */
 export const requiredMarkerClassName = 'sui:ms-0.5 sui:text-danger-text';

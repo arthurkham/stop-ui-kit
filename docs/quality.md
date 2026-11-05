@@ -5,23 +5,24 @@ stylesheet never restyles the host page, the API works on React 18 and 19, and u
 silently change how things look. Each check below protects one of those promises. All of them run
 in CI on every pull request; most also run locally with `pnpm check`.
 
-| Check                        | Command             | Protects against                                                         |
-| ---------------------------- | ------------------- | ------------------------------------------------------------------------ |
-| Type checking                | `pnpm typecheck`    | API and type regressions                                                 |
-| Linting                      | `pnpm lint`         | Bugs, accessibility mistakes in JSX (`jsx-a11y`), kit classes in stories |
-| Formatting                   | `pnpm format:check` | Noise in reviews                                                         |
-| Unit, keyboard and axe tests | `pnpm test`         | Broken behavior, keyboard support and ARIA                               |
-| React 18 / 19 matrix         | CI only             | Breaking the promised React 18 support                                   |
-| Design token contrast        | `pnpm tokens`       | Unreadable colors after a rebrand                                        |
-| Package validation           | `pnpm lint:package` | Broken `exports`, missing files, wrong types for consumers               |
-| CSS invariants               | `pnpm check:css`    | Restyling the host page, class or variable collisions                    |
-| CSS snapshot                 | `pnpm check:css`    | Silent output changes after Tailwind or token updates                    |
-| Browser support              | `pnpm check:css`    | CSS features beyond the supported browsers                               |
-| Bundle size budgets          | `pnpm size`         | Accidental bundle growth                                                 |
-| Browser tests                | `pnpm test:browser` | Problems only real browsers show, in both themes                         |
-| Visual tests                 | CI (Chromatic)      | Unintended visual changes                                                |
-| Changeset                    | CI only             | Releasing changes without a changelog entry                              |
-| Pull request title           | CI only             | Non-conventional commit messages on `main`                               |
+| Check                        | Command              | Protects against                                                         |
+| ---------------------------- | -------------------- | ------------------------------------------------------------------------ |
+| Type checking                | `pnpm typecheck`     | API and type regressions                                                 |
+| Linting                      | `pnpm lint`          | Bugs, accessibility mistakes in JSX (`jsx-a11y`), kit classes in stories |
+| Formatting                   | `pnpm format:check`  | Noise in reviews                                                         |
+| Unit, keyboard and axe tests | `pnpm test`          | Broken behavior, keyboard support and ARIA                               |
+| React 18 / 19 matrix         | CI only              | Breaking the promised React 18 support                                   |
+| Design token contrast        | `pnpm tokens`        | Unreadable colors after a rebrand                                        |
+| Package validation           | `pnpm lint:package`  | Broken `exports`, missing files, wrong types for consumers               |
+| CSS invariants               | `pnpm check:css`     | Restyling the host page, class or variable collisions                    |
+| CSS snapshot                 | `pnpm check:css`     | Silent output changes after Tailwind or token updates                    |
+| Browser support              | `pnpm check:css`     | CSS features beyond the supported browsers                               |
+| Bundle size budgets          | `pnpm size`          | Accidental bundle growth                                                 |
+| Browser tests                | `pnpm test:browser`  | Problems only real browsers show, in both themes                         |
+| Consumer test                | `pnpm test:consumer` | Host CSS leaking in, broken customization, packaging and types for users |
+| Visual tests                 | CI (Chromatic)       | Unintended visual changes                                                |
+| Changeset                    | CI only              | Releasing changes without a changelog entry                              |
+| Pull request title           | CI only              | Non-conventional commit messages on `main`                               |
 
 ## Why each check exists
 
@@ -50,14 +51,19 @@ The compiled stylesheet is parsed and checked for the guarantees the kit makes t
 applications:
 
 - every class is prefixed (`sui:`), so it never collides with application classes;
-- every utility lives in the `components` cascade layer, so application utilities always win;
+- in `styles.layer.css`, every utility lives in the `components` cascade layer, so application
+  utilities always win;
+- in `styles.css`, every utility is unlayered and carries the specificity shield, so host CSS
+  without `!important` cannot override it, and the file is exactly the transform of the layered one;
 - there are no global selectors (no reset of `button`, `a`, `body`…);
 - only `--sui-*` and Tailwind-internal `--tw-*` custom properties are declared;
-- the layer order is `theme`, `base`, `components`, `utilities`.
+- the layer order is `theme`, `base`, `components`, `utilities` (without `components` in
+  `styles.css`).
 
 ### CSS snapshot
 
-`packages/styles/snapshots/styles.css` is a copy of the compiled stylesheet. Any change to the
+`packages/styles/snapshots/styles.layer.css` is a copy of the compiled layered stylesheet (the
+isolated one is checked to be its exact transform). Any change to the
 generated CSS, for example after a Tailwind update, fails the check until the snapshot is updated
 with `pnpm css:update` and committed. The diff makes the change visible in review instead of
 discovering it in production.
@@ -81,6 +87,26 @@ Every Storybook story runs as a test in Chromium, Firefox and WebKit, once in th
 in the dark theme. A story fails if it throws or if the accessibility checks (axe, including color
 contrast) find a violation. Unit tests run in jsdom, which has no layout or styles; real browsers
 catch issues such as an invisible focus ring or low contrast in one theme.
+
+### Consumer test
+
+Storybook is a friendly host: it loads the kit in a controlled order and imports packages from
+source. Applications get the published tarballs, their own bundler and their own global CSS. The
+consumer test packs every package, installs the tarballs with npm into a fresh Vite application
+outside the workspace, type-checks it against the published declarations and builds it. In
+Chromium it then checks that:
+
+- next to an existing site's CSS (untouched Bootstrap 3 in several load orders, plus aggressive
+  global element and ID selectors) and next to Tailwind, every component renders exactly like it
+  does on a page with only the kit, with both stylesheets where they apply;
+- Bootstrap's `!important` utilities (`.hidden`, `.pull-right`) and inline styles (jQuery's
+  `.hide()`) still apply to kit components;
+- every documented way to customize the kit works with each stylesheet: semantic and component
+  tokens, nested themes, application Tailwind classes, plain CSS, CSS Modules, SCSS, styling hooks
+  and `createButton`.
+
+Storybook alone would not catch these problems: it loads the kit from source in a controlled order,
+while bundlers reorder stylesheets in production builds.
 
 ### Visual tests (Chromatic)
 

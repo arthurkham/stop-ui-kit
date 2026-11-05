@@ -85,6 +85,8 @@ fixed colors so each theme keeps its own values.
 | `data-sui-field-error`              | `FieldError`                     |
 
 States use native selectors: `:disabled`, `[readonly]`, `:focus-visible`, `[aria-invalid='true']`.
+With the default stylesheet, mark declarations that replace kit styles as `!important`; with
+`styles.layer.css`, plain declarations win.
 
 <Canvas of={Examples.StylingHooks} />
 
@@ -92,9 +94,9 @@ States use native selectors: `:disabled`, `[readonly]`, `:focus-visible`, `[aria
   language="css"
   code={`.profile [data-sui-input],
 .profile [data-sui-select] {
-  border-width: 0 0 1px;
-  border-radius: 0;
-  padding-inline: 0;
+  border-width: 0 0 1px !important;
+  border-radius: 0 !important;
+  padding-inline: 0 !important;
 }`}
 />
 
@@ -103,7 +105,7 @@ also work in right-to-left languages.
 
 ## One-off changes
 
-For a single field, pass `className` or `style`. Kit styles live in a lower cascade layer than your
-utilities, so your classes always win.
+For a single field, pass `className` or `style`. To replace a kit style with the default
+stylesheet, use Tailwind's important modifier; with `styles.layer.css`, drop the `!`.
 
-<Source language="tsx" code={`<Input className="font-mono" aria-label="API key" readOnly value={key} />`} />
+<Source language="tsx" code={`<Input className="font-mono!" aria-label="API key" readOnly value={key} />`} />

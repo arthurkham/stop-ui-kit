@@ -1,0 +1,82 @@
+import { Meta, Source } from '@storybook/addon-docs/blocks';
+
+<Meta title="Customization/Stylesheets" />
+
+# Stylesheets
+
+The kit ships one design in two stylesheets. Pick one and import it once at the root of your
+application.
+
+| Stylesheet                        | For                                               | Your CSS overrides kit styles                    |
+| --------------------------------- | ------------------------------------------------- | ------------------------------------------------ |
+| `@stop-ui/react/styles.css`       | Any site, including existing ones with global CSS | With `!important` (Tailwind: `px-8!`)            |
+| `@stop-ui/react/styles.layer.css` | New applications without legacy global CSS        | Always (`className="px-8"`), in any import order |
+
+Neither includes a reset or global selectors, so adding the kit never changes the rest of the page.
+
+## Tokens work everywhere
+
+Colors, themes and component tokens are CSS variables. Variables never compete with selectors, so
+they work the same way with both stylesheets and next to any other CSS. Prefer them for anything a
+token covers.
+
+<Source
+  language="css"
+  code={`:root {
+  --sui-primary: #6d28d9;          /* every component */
+}
+
+.checkout {
+  --sui-button-primary: #c2410c;   /* only buttons, only here */
+}`}
+/>
+
+## `styles.css`: isolated (default)
+
+Kit styles are protected from the page's CSS, so the kit can be added to an existing site without
+touching its stylesheets.
+
+- Bootstrap 3, normalize.css and the site's own global styles (`label { font-weight: bold }`,
+  `#content input { … }`) do not affect kit components, whatever their load order.
+- `!important` rules and inline styles still apply to kit components, so Bootstrap's `.hidden` and
+  `.pull-right` and jQuery's `.hide()` and `.show()` keep working.
+- To override a kit style yourself, use tokens, `style`, or `!important`. Classes for properties the
+  kit does not set (width, margin, shadow) need nothing extra.
+
+<Source
+  language="tsx"
+  code={`<Button className="w-full">Continue</Button>        // the kit does not set width
+<Button className="rounded-full! px-8!">Join</Button> // replaces kit styles
+<Button style={{ borderRadius: 4 }}>Save</Button>    // inline styles always win`}
+/>
+
+<Source
+  language="css"
+  code={`.toolbar [data-sui-button] {
+  text-transform: uppercase !important;
+}`}
+/>
+
+Kit rules are not in a cascade layer and have the specificity of two ID selectors
+(`:not(#\#):not(#\#)`, which matches every element). Host rules without `!important` cannot win
+against them unless they use more than two IDs.
+
+Bootstrap 3 sets `html { font-size: 10px }`. Restore the kit's scale with a variable only the kit
+reads:
+
+<Source language="css" code={`:root { --sui-rem: 16px; }`} />
+
+## `styles.layer.css`: layered
+
+Kit styles live in the `components` cascade layer, below your utilities and unlayered CSS, so plain
+classes and styling hooks override them without `!important`.
+
+<Source
+  language="tsx"
+  code={`import '@stop-ui/react/styles.layer.css';
+
+<Button className="rounded-full px-8">Join</Button>`}
+/>
+
+Unlayered CSS always beats layered CSS, so global CSS such as Bootstrap 3 would override this
+stylesheet. Use it only on pages without such CSS.

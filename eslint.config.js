@@ -7,7 +7,13 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig([
-  globalIgnores(['**/dist', '**/storybook-static', '**/coverage']),
+  globalIgnores([
+    '**/dist',
+    '**/storybook-static',
+    '**/coverage',
+    // An application fixture, type-checked by the consumer test against the packed packages.
+    'tests/consumer/app',
+  ]),
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
   {
@@ -43,7 +49,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.config.{ts,js}', 'tooling/**/*.{ts,js}', '**/*.cjs'],
+    files: ['**/*.config.{ts,js}', 'tooling/**/*.{ts,js}', 'tests/**/*.js', '**/*.cjs'],
     languageOptions: { globals: globals.node },
   },
   {

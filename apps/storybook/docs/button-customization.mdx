@@ -19,6 +19,11 @@ component styles.
 | Restyle from any CSS setup                              | Styling hooks (`data-*`)      | Your stylesheet                 |
 | Adjust one button                                       | `className` / `style`         | The call site                   |
 
+Colors come from tokens, which always work. Rules that replace other kit styles (corners, padding,
+typography) need `!important` with the default stylesheet, which protects the kit from a site's
+global CSS: Tailwind's important modifier (`rounded-full!`) or `!important` in plain CSS. With
+`styles.layer.css` they work without it. See **Customization → Stylesheets**.
+
 Shape (`variant`) and color (`tone`) are independent. Every shape reads its colors from the active
 tone, so a color change or a new tone works with **solid, soft, outline and ghost** at once.
 
@@ -145,15 +150,16 @@ scratch read colors from the tone variables, so they still work with every tone.
   code={`export const Button = createButton({
   variants: {
     // a solid button with pill corners
-    pill: { extends: 'solid', className: 'rounded-full px-6' },
+    pill: { extends: 'solid', className: 'rounded-full! px-6!' },
     // a new shape built on the tone variables
-    link: 'h-auto p-0 bg-transparent border-transparent underline underline-offset-4 text-(--sui-tone-text)',
+    link: 'h-auto! p-0! bg-transparent! border-transparent! underline! underline-offset-4 text-(--sui-tone-text)!',
   },
 });`}
 />
 
-Class names can be your own Tailwind utilities or plain CSS classes. Kit styles live in a lower
-cascade layer than your utilities, so your classes always win.
+Class names can be your own Tailwind utilities or plain CSS classes. With the default stylesheet,
+mark the ones that replace kit styles as important (`rounded-full!`, or `!important` in plain CSS);
+with `styles.layer.css`, plain classes always win.
 
 | Tone variable                              | Value                                  |
 | ------------------------------------------ | -------------------------------------- |
@@ -176,25 +182,27 @@ cascade layer than your utilities, so your classes always win.
 ## Styling hooks
 
 Every button renders `data-sui-button`, `data-variant`, `data-tone`, `data-size` and, while loading,
-`data-loading`. Use them from SCSS, CSS Modules or plain CSS:
+`data-loading`. Use them from SCSS, CSS Modules or plain CSS (with the default stylesheet, mark
+declarations that replace kit styles as `!important`):
 
 <Canvas of={Examples.StylingHooks} />
 
 <Source
   language="css"
   code={`[data-sui-button][data-variant='solid'] {
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
 }
 
 [data-sui-button][data-loading] {
-  cursor: wait;
+  cursor: wait !important;
 }`}
 />
 
 ## One-off changes
 
-For a single button, pass `className` or `style`. Your utilities override kit styles regardless of
-import order.
+For a single button, pass `className` or `style`. Properties the kit does not set, such as width,
+margin or shadow, need nothing else. To replace a kit style, use the important modifier with the
+default stylesheet (`className="px-8!"`), or `style`, which always wins.
 
 <Canvas of={Examples.OneOff} />

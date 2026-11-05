@@ -23,6 +23,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./styles.css": "./dist/styles.css",
+    "./styles.layer.css": "./dist/styles.layer.css",
     "./tailwind.css": "./src/tailwind.css",
     "./package.json": "./package.json"
   },
@@ -33,6 +34,7 @@
         "import": "./dist/index.js"
       },
       "./styles.css": "./dist/styles.css",
+      "./styles.layer.css": "./dist/styles.layer.css",
       "./package.json": "./package.json"
     }
   },
