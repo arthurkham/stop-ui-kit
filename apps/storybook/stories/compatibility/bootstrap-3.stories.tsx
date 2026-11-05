@@ -88,9 +88,22 @@ export const Layered: Story = {
  */
 export const Unlayered: Story = {
   name: 'Bootstrap unlayered (broken)',
+  decorators: [
+    (Story) => (
+      <>
+        <p role="note" style={{ margin: '0 0 16px', fontSize: 14 }}>
+          <strong>Intentionally broken:</strong> Bootstrap is loaded without a cascade layer, so its
+          global styles override the kit. See “Bootstrap in a layer” for the fix.
+        </p>
+        <Story />
+      </>
+    ),
+  ],
   parameters: {
     bootstrap: 'unlayered',
     // This story intentionally demonstrates the broken state.
     a11y: { test: 'off' },
+    // A snapshot of a known-broken state adds no protection and only spends the visual test budget.
+    chromatic: { disableSnapshot: true },
   },
 };
