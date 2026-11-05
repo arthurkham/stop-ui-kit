@@ -16,6 +16,7 @@ in CI on every pull request; most also run locally with `pnpm check`.
 | Package validation           | `pnpm lint:package`  | Broken `exports`, missing files, wrong types for consumers               |
 | CSS invariants               | `pnpm check:css`     | Restyling the host page, class or variable collisions                    |
 | CSS snapshot                 | `pnpm check:css`     | Silent output changes after Tailwind or token updates                    |
+| Public API snapshot          | `pnpm check:api`     | Unnoticed changes to what applications customize with                    |
 | Browser support              | `pnpm check:css`     | CSS features beyond the supported browsers                               |
 | Bundle size budgets          | `pnpm size`          | Accidental bundle growth                                                 |
 | Browser tests                | `pnpm test:browser`  | Problems only real browsers show, in both themes                         |
@@ -67,6 +68,17 @@ isolated one is checked to be its exact transform). Any change to the
 generated CSS, for example after a Tailwind update, fails the check until the snapshot is updated
 with `pnpm css:update` and committed. The diff makes the change visible in review instead of
 discovering it in production.
+
+### Public API snapshot
+
+Applications customize the kit through a public contract: exported types and props, tokens and
+component tokens, tone variables, styling hooks, themes and stylesheet entry points (see "Safe
+updates" in the README). `api/` records all of it: the published declarations of every package
+without comments, and `api/css.json` for the CSS side. Any change fails the check and prints what
+was added and removed, until `pnpm api:update` is run and the snapshot is committed.
+
+Additions are routine. A removal or a rename breaks applications that use it, so it needs a
+**Breaking** changeset entry with migration steps and, where possible, an alias for the old name.
 
 ### Browser support
 

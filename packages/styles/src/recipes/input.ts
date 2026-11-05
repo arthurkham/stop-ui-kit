@@ -12,7 +12,8 @@ const typography =
 /** Border, background and focus treatment of a standalone field (or of an input group). */
 const frame = [
   'sui:rounded-md sui:border sui:border-solid sui:border-(color:--sui-input--border) sui:bg-(color:--sui-input--bg)',
-  'sui:transition-colors sui:motion-reduce:transition-none',
+  // The focus outline is not transitioned, so it appears at full contrast at once.
+  'sui:transition-[color,background-color,border-color,text-decoration-color] sui:motion-reduce:transition-none',
   'sui:not-disabled:hover:border-(color:--sui-input--border-hover)',
   'sui:aria-invalid:border-(color:--sui-input--border-invalid) sui:not-disabled:aria-invalid:hover:border-(color:--sui-input--border-invalid)',
   'sui:focus-visible:outline-2 sui:focus-visible:outline-solid sui:focus-visible:outline-offset-2 sui:focus-visible:outline-ring',
@@ -107,7 +108,7 @@ export const inputGroupVariants = cva(
   [
     'sui:box-border sui:flex sui:w-full sui:min-w-0 sui:items-center sui:gap-2',
     'sui:rounded-md sui:border sui:border-solid sui:border-(color:--sui-input--border) sui:bg-(color:--sui-input--bg)',
-    'sui:transition-colors sui:motion-reduce:transition-none',
+    'sui:transition-[color,background-color,border-color,text-decoration-color] sui:motion-reduce:transition-none',
     'sui:hover:border-(color:--sui-input--border-hover)',
     'sui:has-[[aria-invalid=true]]:border-(color:--sui-input--border-invalid)',
     'sui:has-[input:focus-visible]:outline-2 sui:has-[input:focus-visible]:outline-solid sui:has-[input:focus-visible]:outline-offset-2 sui:has-[input:focus-visible]:outline-ring',

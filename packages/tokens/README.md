@@ -30,7 +30,12 @@ Set `data-sui-theme` to `light`, `dark` or `system` on any element. Themes can b
 ### Tailwind preset
 
 Use the same tokens in your application's own Tailwind markup. Utilities are namespaced under
-`sui` so they never collide with your theme:
+`sui` so they never collide with your theme. Install the package directly first: it comes with
+`@stop-ui/react`, but strict package managers such as pnpm only let you import direct dependencies.
+
+```bash
+pnpm add @stop-ui/tokens
+```
 
 ```css
 @import 'tailwindcss';
@@ -67,6 +72,9 @@ component token to change one.
 `--sui-rem` drives every size. All other `rem` tokens are emitted as
 `calc(var(--sui-rem) * n)`, so a host that changes the root font size (Bootstrap 3 sets
 `html { font-size: 10px }`) can restore the intended scale with `:root { --sui-rem: 16px; }`.
+
+Set `--sui-rem` on `:root` only. The derived sizes are computed where they are declared, on the root
+element, so setting `--sui-rem` on another element does not rescale the components inside it.
 
 ## Editing tokens
 

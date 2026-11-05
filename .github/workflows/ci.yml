@@ -33,6 +33,8 @@ jobs:
         run: pnpm lint:package
       - name: CSS invariants, snapshot and browser support
         run: pnpm check:css
+      - name: Public API snapshot
+        run: pnpm check:api
       - name: Bundle size budgets
         run: pnpm size
 
