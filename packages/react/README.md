@@ -7,7 +7,7 @@ pnpm add @stop-ui/react
 ```
 
 ```ts
-import '@stop-ui/react/styles.css';
+import '@stop-ui/react/styles.css'; // or styles.layer.css, see "Stylesheets" in the main README
 import { Button } from '@stop-ui/react';
 ```
 

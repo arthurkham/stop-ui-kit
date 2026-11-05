@@ -44,9 +44,15 @@ module.exports = [
     limit: '3.5 kB',
   },
   {
-    name: '@stop-ui/react: styles.css',
+    name: '@stop-ui/react: styles.css (isolated)',
     path: 'packages/react/dist/styles.css',
     rolldown: false,
-    limit: '3 kB',
+    limit: '3.5 kB',
+  },
+  {
+    name: '@stop-ui/react: styles.layer.css',
+    path: 'packages/react/dist/styles.layer.css',
+    rolldown: false,
+    limit: '3.5 kB',
   },
 ];

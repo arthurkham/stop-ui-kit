@@ -12,11 +12,12 @@ export type ButtonTone = (typeof buttonTones)[number];
  */
 export const buttonVariants = cva(
   [
-    // Layout. `box-border` and `m-0` are explicit because the kit ships without a CSS reset.
-    'sui:box-border sui:m-0 sui:inline-flex sui:shrink-0 sui:items-center sui:justify-center sui:gap-2',
+    // Layout. `box-border`, `m-0` and `py-0` are explicit because the kit ships without a CSS
+    // reset, so host resets (Tailwind preflight, normalize.css) never change the result.
+    'sui:box-border sui:m-0 sui:py-0 sui:inline-flex sui:shrink-0 sui:items-center sui:justify-center sui:gap-2',
     // Every shape has a border; transparent ones keep the outline visible in forced-colors mode.
     'sui:rounded-md sui:border sui:border-solid',
-    'sui:[font-family:inherit] sui:font-medium sui:whitespace-nowrap sui:normal-case sui:no-underline sui:select-none',
+    'sui:[font-family:inherit] sui:font-medium sui:[letter-spacing:normal] sui:whitespace-nowrap sui:normal-case sui:no-underline sui:select-none',
     'sui:cursor-pointer sui:transition-colors sui:motion-reduce:transition-none',
     // Focus indicator. `outline` survives forced-colors mode, unlike box-shadow rings.
     'sui:focus-visible:outline-2 sui:focus-visible:outline-solid sui:focus-visible:outline-offset-2 sui:focus-visible:outline-ring',

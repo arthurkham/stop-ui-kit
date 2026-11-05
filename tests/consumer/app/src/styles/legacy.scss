@@ -1,0 +1,11 @@
+$brand: #0d9488;
+
+.scss-button {
+  background-color: $brand !important;
+}
+
+.scss-fields {
+  [data-sui-input] {
+    border-color: $brand !important;
+  }
+}

@@ -7,7 +7,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
  */
 
 const typography =
-  'sui:[font-family:inherit] sui:text-fg sui:placeholder:text-(color:--sui-input--placeholder)';
+  'sui:[font-family:inherit] sui:[letter-spacing:normal] sui:normal-case sui:text-fg sui:placeholder:text-(color:--sui-input--placeholder)';
 
 /** Border, background and focus treatment of a standalone field (or of an input group). */
 const frame = [
@@ -29,7 +29,7 @@ const grouped = 'sui:rounded-none sui:border-0 sui:bg-transparent sui:px-0 sui:o
 const states = 'sui:disabled:cursor-not-allowed sui:disabled:opacity-50';
 
 export const inputVariants = cva(
-  ['sui:box-border sui:m-0 sui:w-full sui:min-w-0', typography, states],
+  ['sui:box-border sui:m-0 sui:py-0 sui:w-full sui:min-w-0', typography, states],
   {
     variants: {
       size: {
@@ -77,7 +77,7 @@ export const textareaVariants = cva(
 /** Native select with a custom chevron; padding leaves room for the icon at the inline end. */
 export const selectVariants = cva(
   [
-    'sui:box-border sui:m-0 sui:w-full sui:min-w-0 sui:appearance-none sui:cursor-pointer',
+    'sui:box-border sui:m-0 sui:py-0 sui:w-full sui:min-w-0 sui:appearance-none sui:cursor-pointer',
     typography,
     states,
     frame,

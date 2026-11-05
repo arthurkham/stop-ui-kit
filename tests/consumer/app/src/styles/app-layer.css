@@ -1,0 +1,16 @@
+/* With the layered stylesheet, application CSS overrides kit styles without !important. */
+@import 'tailwindcss';
+@import './tokens.css';
+
+.uppercase-button {
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+[data-sui-button][data-variant='outline'] {
+  border-width: 2px;
+}
+
+.tall-fields [data-sui-input][data-size='lg'] {
+  height: 48px;
+}

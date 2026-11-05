@@ -1,0 +1,18 @@
+/* An application with its own Tailwind and the token preset for its own markup. */
+@import 'tailwindcss';
+@import '@stop-ui/tokens/tailwind.css';
+@import './tokens.css';
+
+/* With the isolated stylesheet, plain CSS overrides of kit styles need !important. */
+.uppercase-button {
+  border-radius: 2px !important;
+  text-transform: uppercase !important;
+}
+
+[data-sui-button][data-variant='outline'] {
+  border-width: 2px !important;
+}
+
+.tall-fields [data-sui-input][data-size='lg'] {
+  height: 48px !important;
+}

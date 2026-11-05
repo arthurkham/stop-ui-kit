@@ -49,30 +49,35 @@
   }
 }
 
+/*
+ * Storybook uses the default, isolated stylesheet, so CSS that replaces kit styles is marked
+ * !important. With styles.layer.css the same rules work without it.
+ */
+
 /* Recipe: custom shapes. */
 .demo-pill {
-  border-radius: 9999px;
-  padding-inline: 1.5rem;
+  border-radius: 9999px !important;
+  padding-inline: 1.5rem !important;
 }
 
 .demo-link {
-  height: auto;
-  padding: 0;
-  border-color: transparent;
-  background: transparent;
-  color: var(--sui-tone-text);
-  text-decoration: underline;
+  height: auto !important;
+  padding: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  color: var(--sui-tone-text) !important;
+  text-decoration: underline !important;
   text-underline-offset: 4px;
 }
 
 /* Recipe: styling hooks. */
 .demo-hooks [data-sui-button][data-variant='solid'] {
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
 }
 
 .demo-hooks [data-sui-button][data-loading] {
-  cursor: wait;
+  cursor: wait !important;
 }
 
 /* Recipe: restyle form fields in one part of the page. */
@@ -84,7 +89,7 @@
 /* Recipe: style form fields through the styling hooks. */
 .demo-underlined [data-sui-input],
 .demo-underlined [data-sui-select] {
-  border-width: 0 0 1px;
-  border-radius: 0;
-  padding-inline: 0;
+  border-width: 0 0 1px !important;
+  border-radius: 0 !important;
+  padding-inline: 0 !important;
 }

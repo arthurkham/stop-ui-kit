@@ -1,0 +1,8 @@
+@import 'bootstrap/dist/css/bootstrap.css';
+@import '@stop-ui/react/styles.css';
+
+:root {
+  --sui-rem: 16px;
+  /* Keeps the bundler from sharing one stylesheet between pages with the same imports. */
+  --consumer-page: 'bootstrap-before';
+}

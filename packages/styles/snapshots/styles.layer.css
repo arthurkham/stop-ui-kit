@@ -354,6 +354,10 @@
     padding-inline: calc(var(--sui-spacing) * 5);
   }
 
+  .sui\:py-0 {
+    padding-block: 0;
+  }
+
   .sui\:py-1\.5 {
     padding-block: calc(var(--sui-spacing) * 1.5);
   }
@@ -407,6 +411,10 @@
   .sui\:font-medium {
     --tw-font-weight: var(--sui-font-weight-medium);
     font-weight: var(--sui-font-weight-medium);
+  }
+
+  .sui\:\[letter-spacing\:normal\] {
+    letter-spacing: normal;
   }
 
   .sui\:whitespace-nowrap {

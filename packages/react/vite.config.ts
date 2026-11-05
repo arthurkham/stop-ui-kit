@@ -7,18 +7,23 @@ import { defineLibraryConfig } from '../../tooling/vite-library.js';
 
 const root = import.meta.dirname;
 
-/** Ships the compiled stylesheet as `@stop-ui/react/styles.css` for a single-package setup. */
-function copyStylesheet(): Plugin {
+/**
+ * Ships the compiled stylesheets as `@stop-ui/react/styles.css` (isolated) and
+ * `@stop-ui/react/styles.layer.css` (layered) for a single-package setup.
+ */
+function copyStylesheets(): Plugin {
   return {
-    name: 'stop-ui:copy-stylesheet',
+    name: 'stop-ui:copy-stylesheets',
     writeBundle() {
       const require = createRequire(resolve(root, 'package.json'));
-      copyFileSync(require.resolve('@stop-ui/styles/styles.css'), resolve(root, 'dist/styles.css'));
+      for (const file of ['styles.css', 'styles.layer.css']) {
+        copyFileSync(require.resolve(`@stop-ui/styles/${file}`), resolve(root, 'dist', file));
+      }
     },
   };
 }
 
 export default defineLibraryConfig({
   root,
-  plugins: [react(), copyStylesheet()],
+  plugins: [react(), copyStylesheets()],
 });

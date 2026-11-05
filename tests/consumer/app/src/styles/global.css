@@ -1,0 +1,6 @@
+/* Global changes on the root element. */
+:root {
+  --sui-rem: 20px;
+  --sui-radius-md: 999px;
+  --sui-danger-text: #9f1239;
+}

@@ -1,0 +1,45 @@
+/* Customization through tokens: the same in both stylesheets. */
+
+/* Semantic tokens: the brand changes for every component in this part of the page. */
+.brand {
+  --sui-primary: #6d28d9;
+  --sui-primary-hover: #5b21b6;
+  --sui-primary-fg: #ffffff;
+  --sui-ring: #6d28d9;
+}
+
+/* Component tokens: one component changes, the others keep the theme. */
+.orange-buttons {
+  --sui-button-primary: #c2410c;
+  --sui-button-primary-hover: #9a3412;
+}
+
+.purple-fields {
+  --sui-input-border: #7c3aed;
+  --sui-input-bg: #faf5ff;
+}
+
+.square {
+  --sui-radius-md: 0px;
+}
+
+/* Theme-aware values for a project tone and a brand override. */
+:root {
+  --app-success: #15803d;
+  --app-success-hover: #166534;
+  --app-success-fg: #ffffff;
+}
+
+[data-sui-theme='dark'] {
+  --app-success: #4ade80;
+  --app-success-hover: #86efac;
+  --app-success-fg: #052e16;
+}
+
+.brand-per-theme {
+  --sui-primary: #6d28d9;
+}
+
+[data-sui-theme='dark'] .brand-per-theme {
+  --sui-primary: #c4b5fd;
+}

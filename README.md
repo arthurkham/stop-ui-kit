@@ -53,6 +53,10 @@ Import the stylesheet once at the root of your application:
 import '@stop-ui/react/styles.css';
 ```
 
+That is all an existing site needs: the stylesheet adds no global styles, and the site's own CSS,
+Bootstrap included, cannot break kit components. See [Stylesheets](#stylesheets) for the layered
+alternative for new applications.
+
 ## Usage
 
 ```tsx
@@ -74,7 +78,7 @@ export const Button = createButton({
   tones: {
     success: { color: 'var(--app-success)', hover: 'var(--app-success-hover)', fg: '#fff' },
   },
-  variants: { pill: { extends: 'solid', className: 'rounded-full px-6' } },
+  variants: { pill: { extends: 'solid', className: 'rounded-full! px-6!' } },
 });
 ```
 
@@ -96,32 +100,40 @@ so a brand theme only needs to override a few variables. To use the same tokens 
 Tailwind markup (`bg-sui-primary`, `rounded-sui-md`), add the
 [Tailwind preset](./packages/tokens#tailwind-preset).
 
-## Using alongside other CSS
+## Stylesheets
 
-The kit is designed to live inside existing applications:
+The kit ships one design in two stylesheets. Pick one and import it once.
 
-- No global reset is included, and utilities and tokens are prefixed (`sui:`, `--sui-*`).
-- Kit styles live in the `components` cascade layer: above a host's `base` layer (e.g. Tailwind
-  preflight) and below its `utilities` layer. Your own utilities and unlayered CSS always win, so
-  `<Button className="px-8">` works regardless of import order.
+| Stylesheet                        | For                                               | Your CSS overrides kit styles                    |
+| --------------------------------- | ------------------------------------------------- | ------------------------------------------------ |
+| `@stop-ui/react/styles.css`       | Any site, including existing ones with global CSS | With `!important` (Tailwind: `px-8!`)            |
+| `@stop-ui/react/styles.layer.css` | New applications without legacy global CSS        | Always (`className="px-8"`), in any import order |
 
-### Legacy global CSS (Bootstrap 3, normalize.css)
+Both include no reset and no global selectors, and prefix every class and variable (`sui:`,
+`--sui-*`), so adding the kit never changes the rest of the page. In both, tokens are the main way
+to customize: CSS variables never compete with selectors, so colors, themes and component tokens
+work the same way everywhere.
 
-Unlayered CSS always beats layered CSS, regardless of specificity. Global element styles such as
-`button { color: inherit; font: inherit }` from normalize.css would therefore override the kit. Load
-such stylesheets into a cascade layer below the kit, and declare the layer order before any other CSS:
+### `styles.css`: isolated (default)
 
-```html
-<style>
-  @layer legacy, theme, base, components, utilities;
-  @import url('/css/bootstrap.css') layer(legacy);
-</style>
-```
+Kit styles are protected from the page's CSS, so the kit can be added to an existing site without
+touching its stylesheets:
 
-Your application's own unlayered CSS keeps overriding Bootstrap exactly as before.
+- **Bootstrap 3, normalize.css and the site's own global styles** (`label { font-weight: bold }`,
+  `#content input { … }`) do not affect kit components, whatever their load order.
+- **Existing behavior keeps working.** `!important` rules and inline styles still apply to kit
+  components, so Bootstrap's `.hidden` and `.pull-right` and jQuery's `.hide()` and `.show()` work
+  as before.
+- **To override a kit style yourself**, use tokens, `style`, or `!important`: Tailwind's important
+  modifier (`className="rounded-full!"`) or `!important` in plain CSS. Classes for properties the
+  kit does not set (width, margin, shadow) need nothing extra.
 
-Bootstrap 3 also sets `html { font-size: 10px }`. Restore the kit's intended scale with a single
-variable:
+How it works: kit rules are not in a cascade layer and have the specificity of two ID selectors
+(`:not(#\#):not(#\#)`, which matches every element), so host rules without `!important` cannot win
+against them unless they use more than two IDs.
+
+**Bootstrap 3** sets `html { font-size: 10px }`, which would make the kit smaller. Restore its scale
+with a variable that only the kit reads:
 
 ```css
 :root {
@@ -129,7 +141,23 @@ variable:
 }
 ```
 
-See **Compatibility / Bootstrap 3** in Storybook for a side-by-side comparison.
+The [consumer test](./docs/quality.md#consumer-test) checks all of this on every change, in a real
+application next to untouched Bootstrap 3 and aggressive global CSS.
+
+### `styles.layer.css`: layered
+
+Kit styles live in the `components` cascade layer: above a host's `base` layer (e.g. Tailwind
+preflight) and below its `utilities` layer. Your own utilities and unlayered CSS always win, so
+`<Button className="px-8">` works without `!`, regardless of import order.
+
+Because unlayered CSS always beats layered CSS, global CSS such as Bootstrap 3 would override this
+stylesheet. Use it only when the page has no such CSS, or load that CSS into the `base` layer
+(`@import 'bootstrap.css' layer(base);`), which changes how it interacts with your own styles.
+If your application uses its own cascade layers, declare the order once, before any other CSS:
+
+```css
+@layer theme, base, components, app, utilities;
+```
 
 ## Browser support
 
@@ -142,6 +170,7 @@ pnpm install
 pnpm dev          # Storybook on http://localhost:6006
 pnpm test         # unit, keyboard and axe tests
 pnpm test:browser # stories in real browsers, light and dark themes
+pnpm test:consumer # packed packages in a fresh application next to Tailwind and Bootstrap
 pnpm check        # everything CI checks except browser and visual tests
 pnpm build        # build all packages
 pnpm changeset    # describe a change for the next release
