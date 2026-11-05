@@ -6,3 +6,6 @@ pnpm-lock.yaml
 .changeset/*.md
 
 **/snapshots
+
+# Prettier reformats code inside MDX template literals as Markdown.
+*.mdx

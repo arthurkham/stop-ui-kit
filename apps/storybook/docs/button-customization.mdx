@@ -70,17 +70,17 @@ Reference semantic tokens instead of palette steps when the color should differ 
   --sui-button-primary-text: #9a3412;
 }
 
-/_ Lighter values for the dark theme _/
+/* Lighter values for the dark theme */
 [data-sui-theme='dark'] {
---sui-button-primary: #fb923c;
---sui-button-primary-hover: #fdba74;
---sui-button-primary-fg: #431407;
---sui-button-primary-text: #fb923c;
+  --sui-button-primary: #fb923c;
+  --sui-button-primary-hover: #fdba74;
+  --sui-button-primary-fg: #431407;
+  --sui-button-primary-text: #fb923c;
 }
 
-/_ Or only inside one part of the page _/
+/* Or only inside one part of the page */
 .checkout {
---sui-button-primary: #c2410c;
+  --sui-button-primary: #c2410c;
 }`}
 />
 
@@ -188,7 +188,7 @@ Every button renders `data-sui-button`, `data-variant`, `data-tone`, `data-size`
 }
 
 [data-sui-button][data-loading] {
-cursor: wait;
+  cursor: wait;
 }`}
 />
 

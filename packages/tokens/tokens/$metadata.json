@@ -4,6 +4,7 @@
     "primitives/scale",
     "themes/light",
     "themes/dark",
-    "components/button"
+    "components/button",
+    "components/input"
   ]
 }

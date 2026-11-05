@@ -74,3 +74,17 @@
 .demo-hooks [data-sui-button][data-loading] {
   cursor: wait;
 }
+
+/* Recipe: restyle form fields in one part of the page. */
+.demo-filled {
+  --sui-input-bg: var(--sui-surface-subtle);
+  --sui-input-border-hover: var(--sui-primary);
+}
+
+/* Recipe: style form fields through the styling hooks. */
+.demo-underlined [data-sui-input],
+.demo-underlined [data-sui-select] {
+  border-width: 0 0 1px;
+  border-radius: 0;
+  padding-inline: 0;
+}

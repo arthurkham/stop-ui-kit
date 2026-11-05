@@ -6,7 +6,8 @@
       "primitives/color": "source",
       "primitives/scale": "source",
       "themes/light": "enabled",
-      "components/button": "enabled"
+      "components/button": "enabled",
+      "components/input": "enabled"
     }
   },
   {
@@ -16,7 +17,8 @@
       "primitives/color": "source",
       "primitives/scale": "source",
       "themes/dark": "enabled",
-      "components/button": "enabled"
+      "components/button": "enabled",
+      "components/input": "enabled"
     }
   }
 ]

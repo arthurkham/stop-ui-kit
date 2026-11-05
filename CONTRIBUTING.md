@@ -17,6 +17,22 @@ pnpm exec playwright install      # once, for browser tests
 5. Open a pull request. The title must follow [Conventional Commits](https://www.conventionalcommits.org/),
    for example `feat(button): add icon-only size`, because it becomes the commit message on `main`.
 
+## Component guidelines
+
+- **Accessibility first.** Prefer native elements and attributes (`<button>`, `<input>`, `required`,
+  `disabled`) over ARIA. Every component has stories that run as axe and keyboard tests, and an
+  Accessibility section in its documentation.
+- **No hard-coded text.** Every visible or announced string is a prop with an English default
+  (for example `loadingLabel="Loading"`), so applications can translate it.
+- **Right-to-left ready.** Use logical properties only: `ps-*`, `pe-*`, `ms-*`, `me-*`, `start-*`,
+  `end-*` and `text-start` instead of `pl-*`, `pr-*`, `ml-*`, `mr-*`, `left-*`, `right-*` and
+  `text-left`. Recipe tests reject physical properties, and components with directional layout
+  have a right-to-left story.
+- **Colors come from tokens.** Components read semantic or component tokens, never fixed colors, so
+  themes and rebranding work without overrides.
+- **Styling hooks.** Render `data-sui-<component>` and the public state (`data-size`, `data-variant`,
+  …) so the component can be styled from any CSS setup.
+
 ## Useful commands
 
 | Command                                            | Description                                              |
